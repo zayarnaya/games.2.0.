@@ -12,7 +12,7 @@ module.exports = {
 	},
 	devtool: 'source-map',
 	module: {
-		rules: [ styles, styles_modules ],
+		rules: [styles, styles_modules],
 	},
 	devServer: {
 		watchFiles: path.join(__dirname, '@'),

@@ -8,9 +8,9 @@ const html = require('../rules/html');
 
 module.exports = {
 	entry: path.join(__dirname, './../../src/index.js'),
-	plugins: [ htmlWebpackPluginInstance ],
+	plugins: [htmlWebpackPluginInstance],
 	module: {
-		rules: [ images, fonts, jsx, tsx, html ],
+		rules: [images, fonts, jsx, tsx, html],
 	},
 	resolve: {
 		extensions: ['.*', '.js', '.jsx', '.ts', '.tsx', '.scss', '.css', '.html'],
@@ -19,6 +19,6 @@ module.exports = {
 			'@assets': path.resolve(__dirname, './../../src/assets'),
 			'@images': path.resolve(__dirname, './../../src/assets/images'),
 			'@components': path.resolve(__dirname, './../../src/views/components'),
-		}
+		},
 	},
 };

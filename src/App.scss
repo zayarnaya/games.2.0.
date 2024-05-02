@@ -1,13 +1,12 @@
 body {
-    height: 100vh;
-    width: 100vw;
+	height: 100vh;
+	width: 100vw;
 	overflow: hidden;
 }
 
 * {
-    box-sizing: border-box;
+	box-sizing: border-box;
 }
-
 
 // .header {
 //     width: 100%;
@@ -15,82 +14,79 @@ body {
 // }
 
 .main {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
+	display: flex;
+	flex-direction: row;
+	width: 100%;
 }
 
 .main__left-field,
 .main__game-field,
 .main__right-field {
-    display: flex;
-    flex-direction: column;
-    width: 30%;
-    box-sizing: border-box;
-    border: 1px dotted gray;
-    padding: 20px 10px;
+	display: flex;
+	flex-direction: column;
+	width: 30%;
+	box-sizing: border-box;
+	border: 1px dotted gray;
+	padding: 20px 10px;
 }
 
 .main__game-field {
-    text-align: center;
+	text-align: center;
 }
 
-
 .game-row {
-    display: flex;
-    flex-direction: row;
-    min-width: 300px;
+	display: flex;
+	flex-direction: row;
+	min-width: 300px;
 }
 
 .game-cell {
-    box-sizing: border-box;
-    width: 30px;
-    height: 30px;
-    flex-shrink: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid gray;
+	box-sizing: border-box;
+	width: 30px;
+	height: 30px;
+	flex-shrink: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: 1px solid gray;
 }
 
 .game-cell_line.del {
-    background-color: black;
-    opacity: .9;
+	background-color: black;
+	opacity: 0.9;
 }
 
 .game-cell_line.wrong {
-    border: 1px solid red;
+	border: 1px solid red;
 }
 
 .nav-list {
-    list-style: none;
+	list-style: none;
 }
 
 .nav-list__item {
-    list-style: none;
+	list-style: none;
 }
 
 .nav-list__item.active {
-    background-color: antiquewhite;
+	background-color: antiquewhite;
 }
 
 .field__line {
-    height: 700px;
-    width: 270px;
-    border: 1px solid green;
-    margin-left: auto;
-    margin-right: auto;
+	height: 700px;
+	width: 270px;
+	border: 1px solid green;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .field__square {
-    height: 300px;
-    width: 300px;
-    border: 1px solid red;
-    margin-left: auto;
-    margin-right: auto;
+	height: 300px;
+	width: 300px;
+	border: 1px solid red;
+	margin-left: auto;
+	margin-right: auto;
 }
-
-
 
 .red {
 	box-sizing: border-box;
@@ -108,8 +104,8 @@ body {
 }
 
 .field__line {
-    display: grid;
-    grid-template-columns: repeat(9, 1fr);
+	display: grid;
+	grid-template-columns: repeat(9, 1fr);
 	height: unset;
 }
 

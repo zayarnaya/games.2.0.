@@ -1,43 +1,42 @@
 .button {
-    display: block;
-    text-align: center;
-    text-decoration: none;
-    transition: .3s;
+	display: block;
+	text-align: center;
+	text-decoration: none;
+	transition: 0.3s;
 
-    &:active,
-    &:hover,
-    &:focus,
-    &:visited {
-        text-decoration: none;
-        outline: none;
-    }
+	&:active,
+	&:hover,
+	&:focus,
+	&:visited {
+		text-decoration: none;
+		outline: none;
+	}
 
-    &__save {
-        background-color: lightskyblue;
-        &:hover {
-            background-color: aliceblue;
-        }
-    }
+	&__save {
+		background-color: lightskyblue;
+		&:hover {
+			background-color: aliceblue;
+		}
+	}
 
-    &__load {
-        background-color: lightseagreen;
-        &:hover {
-            background-color: aliceblue;
-        }
-    }
+	&__load {
+		background-color: lightseagreen;
+		&:hover {
+			background-color: aliceblue;
+		}
+	}
 
-    &__restart {
-        background-color: lightcoral;
-        &:hover {
-            background-color: aliceblue;
-        }
-    }
+	&__restart {
+		background-color: lightcoral;
+		&:hover {
+			background-color: aliceblue;
+		}
+	}
 
-    &__undo {
-        background-color: lightpink;
-        &:hover {
-            background-color: aliceblue;
-        }
-    }
-
+	&__undo {
+		background-color: lightpink;
+		&:hover {
+			background-color: aliceblue;
+		}
+	}
 }

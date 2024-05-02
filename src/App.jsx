@@ -1,8 +1,5 @@
 import React, { StrictMode, Suspense } from 'react';
-import {
-	BrowserRouter, Route, Routes
-  } from "react-router-dom";
-
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import './App.scss';
 import './assets/styles/index.scss';
@@ -20,13 +17,13 @@ const App = () => {
 			<BrowserRouter>
 				<Header />
 				<MainContentWrapper>
-						<Sidebar links={menuLinks} />
-						<Suspense fallback={<Spinner />}>
-							<Routes>
-								<Route path='/' element={<Line />} />
-								<Route path='/knight' element={<Knight />} />
-							</Routes>
-						</Suspense>
+					<Sidebar links={menuLinks} />
+					<Suspense fallback={<Spinner />}>
+						<Routes>
+							<Route path='/' element={<Line />} />
+							<Route path='/knight' element={<Knight />} />
+						</Routes>
+					</Suspense>
 				</MainContentWrapper>
 			</BrowserRouter>
 		</StrictMode>

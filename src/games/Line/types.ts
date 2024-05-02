@@ -1,6 +1,5 @@
 export type LineItem = {
-    active: boolean, 
-    deleted: boolean, 
-    value: number
-}
-
+	active: boolean;
+	deleted: boolean;
+	value: number;
+};

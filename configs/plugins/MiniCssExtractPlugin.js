@@ -1,5 +1,5 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = new MiniCssExtractPlugin({
-    filename: '[name].[contenthash].css',
-})
+	filename: '[name].[contenthash].css',
+});

@@ -1,10 +1,10 @@
 export const menuLinks = [
 	{
-	  name: 'Вычеркни число',
-	  href: "/"
+		name: 'Вычеркни число',
+		href: '/',
 	},
 	{
-	  name: 'Ход конем',
-	  href: "knight"
+		name: 'Ход конем',
+		href: 'knight',
 	},
 ];
