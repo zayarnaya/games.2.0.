@@ -4,11 +4,15 @@ body {
 	overflow: hidden;
 }
 
-
-.header {
-    width: 100%;
-    text-align: center;
+* {
+    box-sizing: border-box;
 }
+
+
+// .header {
+//     width: 100%;
+//     text-align: center;
+// }
 
 .main {
     display: flex;
@@ -109,8 +113,8 @@ body {
 	height: unset;
 }
 
-.field_knight {
-	display: grid;
-    grid-template-columns: repeat(10, 30px);
-	grid-template-rows: repeat(10, 30px);
-}
+// .field_knight {
+// 	display: grid;
+//     grid-template-columns: repeat(10, 30px);
+// 	grid-template-rows: repeat(10, 30px);
+// }

@@ -1,0 +1,24 @@
+.nav-list__item a {
+    display: block;
+    width: 100px;
+    color: black;
+    line-height: normal;
+    text-decoration: none;
+
+    &:active,
+    &:focus,
+    &:visited {
+        text-decoration: none;
+        color: black;
+    }
+
+    &:hover {
+        background-color: aliceblue;
+    }
+
+    &.active {
+        background-color: aquamarine;
+    }
+}
+
+

@@ -13,15 +13,14 @@ type Props = {
 }
 
 export const NavItem: FC<Props> = ({
-    active = false,
     name,
     onclick,
     href,
     className
   }) => {
     return (
-      <li className={classNames(className, styles['nav-list__item'], active && styles.active)} >
-        {href && <NavLink to={href} onClick={onclick}>{name}</NavLink>}
+      <li className={classNames(className, styles['nav-list__item'])} >
+        {href && <NavLink className={({isActive}) => isActive ? styles.active : ''} to={href} onClick={onclick}>{name}</NavLink>}
         {!href && <span onClick={onclick}>{name}</span>}
       </li>
     )

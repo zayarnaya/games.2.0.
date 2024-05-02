@@ -1,0 +1,6 @@
+.field_knight {
+    display: grid;
+    grid-area: field;
+    grid-template-columns: repeat(10, 30px);
+	grid-template-rows: repeat(10, 30px);
+}

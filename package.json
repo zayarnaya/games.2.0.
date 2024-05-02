@@ -8,7 +8,8 @@
     "build": "webpack --env production",
     "clean": "rd /s /q dist",
     "serve": "webpack serve --open --env development",
-    "prettier": "npx prettier . --write"
+    "prettier": "npx prettier . --write",
+    "deploy": "gh-pages -d build"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +24,7 @@
     "babel-loader": "9.1.3",
     "classnames": "2.5.1",
     "css-loader": "6.9.0",
+    "gh-pages": "6.1.1",
     "html-loader": "5.0.0",
     "html-webpack-plugin": "5.6.0",
     "mini-css-extract-plugin": "2.7.7",

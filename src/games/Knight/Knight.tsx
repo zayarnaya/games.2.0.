@@ -3,6 +3,7 @@ import { getDefaultField, getRowAndCol, isEqualDiff } from "./helpers";
 import { legitMoves } from "./consts";
 import rules from './rules.html';
 import { GameLayout } from "../../views/layouts/GameLayout/GameLayout";
+import styles from './Knight.module.scss';
 
 export const Knight = () => {
     const defaultField = getDefaultField();
@@ -114,7 +115,7 @@ export const Knight = () => {
 
     return (
         <GameLayout>
-            <div className="field_knight">
+            <div className={styles['field_knight']}>
                 {field.flat().map((item, index) => {
                     return <button className={needHint && item.hint ? 'green' : ''} onClick={() => handleClick(index)} disabled={item.value != 0}>{item.value === 0 ? '' : item.value}</button>
                 })}

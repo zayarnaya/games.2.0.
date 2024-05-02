@@ -4,6 +4,7 @@ import { checkHorizontal, checkVertical, getDefaultArray } from "./helpers";
 import { defaultItem } from "./consts";
 import rules from './rules.html';
 import { GameLayout } from '../../views/layouts/GameLayout/GameLayout';
+import { Button } from "../../views/components/Button/Button";
 
 export const Line = () => {
     console.log(rules);
@@ -102,10 +103,10 @@ export const Line = () => {
                 <div>
                     <h3>Игровое меню</h3>
                     <div>
-                        <button onClick={onStart}>Начать заново</button>
-                        <button disabled={history.length === 1}  onClick={onCancel}>Отменить ход</button>
-                        <button onClick={onSave}>Сохранить</button>
-                        <button onClick={onLoad}>Загрузить</button>
+                        <Button onClick={onStart} spec='restart'>Начать заново</Button>
+                        <Button disabled={history.length === 1}  onClick={onCancel} spec='undo'>Отменить ход</Button>
+                        <Button onClick={onSave} spec='save'>Сохранить</Button>
+                        <Button onClick={onLoad} spec='load'>Загрузить</Button>
                     </div>
                 </div>
                 <div dangerouslySetInnerHTML={{__html: rules}} />
