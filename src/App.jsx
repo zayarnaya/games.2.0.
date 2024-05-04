@@ -14,7 +14,7 @@ import { Header } from './views/components/Header/Header';
 const App = () => {
 	return (
 		<StrictMode>
-			<BrowserRouter>
+			<BrowserRouter basename='/games.2.0./'>
 				<Header />
 				<MainContentWrapper>
 					<Sidebar links={menuLinks} />
