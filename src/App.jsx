@@ -14,7 +14,8 @@ import { Header } from './views/components/Header/Header';
 const App = () => {
 	return (
 		<StrictMode>
-			<BrowserRouter basename='/games.2.0./'>
+			<BrowserRouter basename={process.env.REACT_APP_BASE_URL}>
+			{/* <BrowserRouter> */}
 				<Header />
 				<MainContentWrapper>
 					<Sidebar links={menuLinks} />

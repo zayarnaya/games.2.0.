@@ -1,5 +1,6 @@
 const path = require('path');
 const MiniCssExtractPluginInstance = require('../../plugins/MiniCssExtractPlugin');
+const envPlugin = require('../../plugins/DefinePlugin')('production');
 const styles = require('../../rules/styles')(true);
 const styles_modules = require('../../rules/style_modules')(true);
 
@@ -14,6 +15,7 @@ module.exports = {
 		clean: true,
 		assetModuleFilename: path.join('assets', '[name].[contenthash][ext]'),
 	},
+	plugins: [envPlugin],
 	module: {
 		rules: [styles, styles_modules],
 	},
