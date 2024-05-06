@@ -1,8 +1,13 @@
 .button {
 	display: block;
+    border: 1px solid grey;
+    border-radius: 5px;
 	text-align: center;
 	text-decoration: none;
+    line-height: 200%;
 	transition: 0.3s;
+    background-color: lightskyblue;
+    margin: 10px;
 
 	&:active,
 	&:hover,
@@ -12,31 +17,47 @@
 		outline: none;
 	}
 
-	&__save {
-		background-color: lightskyblue;
-		&:hover {
-			background-color: aliceblue;
-		}
-	}
+    &:hover {
+        background-color: rgb(157, 213, 248);
+    }
 
-	&__load {
-		background-color: lightseagreen;
-		&:hover {
-			background-color: aliceblue;
-		}
-	}
+    &_sm {
+        width: 100px;
+    }
 
-	&__restart {
-		background-color: lightcoral;
-		&:hover {
-			background-color: aliceblue;
-		}
-	}
+    &_md {
+        width: 200px;
+    }
 
-	&__undo {
-		background-color: lightpink;
-		&:hover {
-			background-color: aliceblue;
-		}
-	}
+	// &__save {
+	// 	background-color: lightskyblue;
+	// 	&:hover {
+	// 		background-color: aliceblue;
+	// 	}
+	// }
+
+	// &__load {
+	// 	background-color: lightseagreen;
+	// 	&:hover {
+	// 		background-color: aliceblue;
+	// 	}
+	// }
+
+	// &__restart {
+	// 	background-color: lightcoral;
+	// 	&:hover {
+	// 		background-color: aliceblue;
+	// 	}
+	// }
+
+	// &__undo {
+	// 	background-color: lightpink;
+	// 	&:hover {
+	// 		background-color: aliceblue;
+	// 	}
+	// }
+}
+
+.right {
+    float: right;
 }

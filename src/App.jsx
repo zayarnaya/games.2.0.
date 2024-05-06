@@ -15,7 +15,6 @@ const App = () => {
 	return (
 		<StrictMode>
 			<BrowserRouter basename={process.env.REACT_APP_BASE_URL}>
-			{/* <BrowserRouter> */}
 				<Header />
 				<MainContentWrapper>
 					<Sidebar links={menuLinks} />

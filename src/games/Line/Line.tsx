@@ -5,6 +5,8 @@ import { defaultItem } from './consts';
 import rules from './rules.html';
 import { GameLayout } from '../../views/layouts/GameLayout/GameLayout';
 import { Button } from '../../views/components/Button/Button';
+import { LineButton } from './components/LineButton/LineButton';
+import { LineField } from './components/LineField/LineField';
 
 export const Line = () => {
 	console.log(rules);
@@ -96,14 +98,14 @@ export const Line = () => {
 	return (
 		<GameLayout>
 			<div>
-				<div className='field__line'>
+				<LineField>
 					{arr.map((item, index) => (
-						<button disabled={item.deleted} className={item.active ? 'red' : ''} onClick={() => handleClick(index)}>
+						<LineButton disabled={item.deleted} active={item.active} onClick={() => handleClick(index)}>
 							{item.value}
-						</button>
+						</LineButton>
 					))}
-				</div>
-				<button onClick={onSubmit}>Дальше</button>
+				</LineField>
+				<Button size={'sm'} onClick={onSubmit} floatRight={true}>Дальше</Button>
 			</div>
 			<div>
 				<div>
