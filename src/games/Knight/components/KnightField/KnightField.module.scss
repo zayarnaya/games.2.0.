@@ -1,0 +1,10 @@
+.knight-field {
+    display: grid;
+    grid-area: field;
+    grid-template-columns: repeat(10, 40px);
+    grid-template-rows: repeat(10, 40px);
+    width: fit-content;
+    height: fit-content;
+    border: 1px solid grey;
+    margin-top: 1em;
+}

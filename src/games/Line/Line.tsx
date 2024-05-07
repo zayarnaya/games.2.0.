@@ -7,6 +7,8 @@ import { GameLayout } from '../../views/layouts/GameLayout/GameLayout';
 import { Button } from '../../views/components/Button/Button';
 import { LineButton } from './components/LineButton/LineButton';
 import { LineField } from './components/LineField/LineField';
+import { LineLayout } from './layouts/LineLayout/LineLayout';
+import { RulesLayout } from '../../views/layouts/RulesLayout/RulesLayout';
 
 export const Line = () => {
 	console.log(rules);
@@ -97,7 +99,7 @@ export const Line = () => {
 
 	return (
 		<GameLayout>
-			<div>
+			<LineLayout>
 				<LineField>
 					{arr.map((item, index) => (
 						<LineButton disabled={item.deleted} active={item.active} onClick={() => handleClick(index)}>
@@ -106,8 +108,8 @@ export const Line = () => {
 					))}
 				</LineField>
 				<Button size={'sm'} onClick={onSubmit} floatRight={true}>Дальше</Button>
-			</div>
-			<div>
+			</LineLayout>
+			<RulesLayout>
 				<div>
 					<h3>Игровое меню</h3>
 					<div>
@@ -126,7 +128,7 @@ export const Line = () => {
 					</div>
 				</div>
 				<div dangerouslySetInnerHTML={{ __html: rules }} />
-			</div>
+			</RulesLayout>
 		</GameLayout>
 	);
 };

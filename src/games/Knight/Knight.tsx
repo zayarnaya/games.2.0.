@@ -4,6 +4,10 @@ import { legitMoves } from './consts';
 import rules from './rules.html';
 import { GameLayout } from '../../views/layouts/GameLayout/GameLayout';
 import styles from './Knight.module.scss';
+import { KnightButton } from './components/KnightButton/KnightButton';
+import { KnightField } from './components/KnightField/KnightField';
+import { RulesLayout } from '../../views/layouts/RulesLayout/RulesLayout';
+import { Button } from '../../views/components/Button/Button';
 
 export const Knight = () => {
 	const defaultField = getDefaultField();
@@ -13,8 +17,8 @@ export const Knight = () => {
 	const [needHint, setNeedHint] = useState(false);
 	const [history, setHistory] = useState([]);
 
-	console.log(field);
-	console.log(history);
+	// console.log(field);
+	// console.log(history);
 
 	const checkLegit = (row: number, col: number) => {
 		if (!coords.length) return true;
@@ -115,34 +119,34 @@ export const Knight = () => {
 
 	return (
 		<GameLayout>
-			<div className={styles['field_knight']}>
+			<KnightField>
 				{field.flat().map((item, index) => {
 					return (
-						<button
+						<KnightButton
 							className={needHint && item.hint ? 'green' : ''}
 							onClick={() => handleClick(index)}
 							disabled={item.value != 0}
 						>
 							{item.value === 0 ? '' : item.value}
-						</button>
+						</KnightButton>
 					);
 				})}
-			</div>
-			<div>
+			</KnightField>
+			<RulesLayout>
 				<div>
 					<h3>Игровое меню</h3>
 					<div>
-						<button onClick={onNeedHint}>{needHint ? 'Выключить подсказку' : 'Включить подсказку'}</button>
-						<button onClick={onSave}>Сохранить</button>
-						<button onClick={onLoad}>Загрузить</button>
-						<button onClick={onRestart}>Начать сначала</button>
-						<button onClick={onCancel} disabled={!history.length}>
+						<Button size={'md'} onClick={onNeedHint}>{needHint ? 'Выключить подсказку' : 'Включить подсказку'}</Button>
+						<Button size={'md'} onClick={onSave}>Сохранить</Button>
+						<Button size={'md'} onClick={onLoad}>Загрузить</Button>
+						<Button size={'md'} onClick={onRestart}>Начать сначала</Button>
+						<Button size={'md'} onClick={onCancel} disabled={!history.length}>
 							Отменить ход
-						</button>
+						</Button>
 					</div>
 				</div>
 				<div dangerouslySetInnerHTML={{ __html: rules }} />
-			</div>
+			</RulesLayout>
 		</GameLayout>
 	);
 };
