@@ -113,16 +113,16 @@ export const Line = () => {
 				<div>
 					<h3>Игровое меню</h3>
 					<div>
-						<Button onClick={onStart} spec='restart'>
+						<Button onClick={onStart} size={'md'}>
 							Начать заново
 						</Button>
-						<Button disabled={history.length === 1} onClick={onCancel} spec='undo'>
+						<Button size={'md'} disabled={history.length === 1} onClick={onCancel}>
 							Отменить ход
 						</Button>
-						<Button onClick={onSave} spec='save'>
+						<Button size={'md'} onClick={onSave}>
 							Сохранить
 						</Button>
-						<Button onClick={onLoad} spec='load'>
+						<Button size={'md'} onClick={onLoad}>
 							Загрузить
 						</Button>
 					</div>
