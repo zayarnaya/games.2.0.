@@ -71,11 +71,11 @@ export const Knight = () => {
 	};
 
 	const onFail = () => {
-		alert('Вы проиграли!' + 'Ваш счет: ' + (count - 1));
-		if (count - 1 > +highscore) {
-			localStorage.setItem('knight-highscore', (count - 1).toString());
+		alert('Вы проиграли!' + 'Ваш счет: ' + (count));
+		if (count > +highscore) {
+			localStorage.setItem('knight-highscore', (count).toString());
 		}
-		setCount(count - 1);
+		// setCount(count - 1);
 	}
 
 	const onWin = () => {

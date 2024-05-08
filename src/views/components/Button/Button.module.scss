@@ -21,6 +21,10 @@
         background-color: rgb(157, 213, 248);
     }
 
+	&:active {
+		background-color: rgb(0, 157, 255);
+	}
+
     &_sm {
         width: 100px;
     }
@@ -28,34 +32,6 @@
     &_md {
         width: 200px;
     }
-
-	// &__save {
-	// 	background-color: lightskyblue;
-	// 	&:hover {
-	// 		background-color: aliceblue;
-	// 	}
-	// }
-
-	// &__load {
-	// 	background-color: lightseagreen;
-	// 	&:hover {
-	// 		background-color: aliceblue;
-	// 	}
-	// }
-
-	// &__restart {
-	// 	background-color: lightcoral;
-	// 	&:hover {
-	// 		background-color: aliceblue;
-	// 	}
-	// }
-
-	// &__undo {
-	// 	background-color: lightpink;
-	// 	&:hover {
-	// 		background-color: aliceblue;
-	// 	}
-	// }
 }
 
 .right {
