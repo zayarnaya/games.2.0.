@@ -1,0 +1,16 @@
+.patch {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    z-index: 1500;
+    background-color: aquamarine;
+
+    &__message {
+        width: 100%;
+        text-align: center;
+        font-size: large;
+        text-transform: uppercase;
+        margin: 50% auto;
+        transform: translateY(-50%);
+    }
+}

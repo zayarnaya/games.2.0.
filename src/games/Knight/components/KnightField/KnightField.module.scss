@@ -1,4 +1,5 @@
 .knight-field {
+    position: relative;
     display: grid;
     grid-area: field;
     grid-template-columns: repeat(10, 40px);

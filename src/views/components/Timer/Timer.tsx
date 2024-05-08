@@ -7,10 +7,11 @@ import { getTime, parseTime } from './helpers';
 type Props = {
     className?: string,
     time?: string,
+    pause?: boolean,
 };
 
 export const Timer:FC<Props> = forwardRef((props: Props, ref: LegacyRef<HTMLDivElement>) => {
-    const { className, time } = props;
+    const { className, time, pause } = props;
 
     const timer = useMemo(() => {
         if (time) {
@@ -25,22 +26,21 @@ export const Timer:FC<Props> = forwardRef((props: Props, ref: LegacyRef<HTMLDivE
     const [sec, setSec] = useState(timer?.secs || 0);
     const timerRef = useRef(null);
 
-
-
-
-
     const start = Date.now();
 
     timerRef.current = setTimeout(() => {
-        setSec(sec + 1);
-        if (sec === 59) {
-            setSec(0);
-            setMin(min + 1);
+        if (!pause) {
+            setSec(sec + 1);
+            if (sec === 59) {
+                setSec(0);
+                setMin(min + 1);
+            }
+            if (min === 59) {
+                setMin(0);
+                setHour(hour + 1);
+            }
         }
-        if (min === 59) {
-            setMin(0);
-            setHour(hour + 1);
-        }
+
     }, 1000); // ну пока так работает а там надо как-то по уму, без четырех ререндеров
 
     

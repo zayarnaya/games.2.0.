@@ -11,6 +11,7 @@ import { Button } from '../../views/components/Button/Button';
 import { Timer } from '../../views/components/Timer/Timer';
 import { Score } from './components/Score/Score';
 import { HighScore } from './components/HighScore/HighScore';
+import { KnightFieldPatch } from './components/KnightFieldPatch/KnightFieldPatch';
 
 export const Knight = () => {
 	const defaultField = getDefaultField();
@@ -21,8 +22,10 @@ export const Knight = () => {
 	const [history, setHistory] = useState([]);
 	const timerRef = useRef(null);
 	const [timer, setTimer] = useState('');
+	const [pause, setPause] = useState(false);
 
 	const highscore = localStorage.getItem('knight-highscore') || 0;
+	const bestTime = localStorage.getItem('knight-besttime') || '00:00:00';
 
 	// console.log(field);
 	// console.log(history);
@@ -54,7 +57,7 @@ export const Knight = () => {
 			const newField = [...field];
 			newField[row][col] = { ...newField[row][col], value: count };
 			setField(newField);
-			if (count === 100) alert('Ура! Победа!');
+			if (count === 100) onWin();
 			if (needHint) setHint([row, col]);
 		}
 	};
@@ -80,6 +83,14 @@ export const Knight = () => {
 			localStorage.setItem('knight-highscore', (count - 1).toString());
 		}
 		setCount(count - 1);
+	}
+
+	const onWin = () => {
+		const winTime = timerRef?.current?.dataset?.time || '00:00:00';
+		alert('Вы выиграли! Ваше время ' + timerRef.current.dataset.time);
+		if (winTime.localeCompare(bestTime) > 0) {
+			localStorage.setItem('knight-besttime', winTime);
+		}
 	}
 
 	const setHint = (coords: [number, number]) => {
@@ -144,9 +155,14 @@ export const Knight = () => {
 		return null;
 	}
 
+	const onPauseClick = () => {
+		setPause(!pause);
+	}
+
 	return (
 		<GameLayout>
 			<KnightField>
+				{pause && <KnightFieldPatch />}
 				{field.flat().map((item, index) => {
 					return (
 						<KnightButton
@@ -161,7 +177,7 @@ export const Knight = () => {
 				})}
 			</KnightField>
 			<RulesLayout>
-				<Timer ref={timerRef} time={timer}/>
+				<Timer ref={timerRef} time={timer} pause={pause}/>
 				<Score>{count - 1}</Score>
 				<HighScore />
 				<div>
@@ -174,7 +190,7 @@ export const Knight = () => {
 						<Button size={'md'} onClick={onCancel} disabled={!history.length}>
 							Отменить ход
 						</Button>
-						<Button size='sm' onClick={getTime}>Таймер</Button>
+						<Button size='sm' onClick={onPauseClick}>Пауза</Button>
 					</div>
 				</div>
 				<div dangerouslySetInnerHTML={{ __html: rules }} />
