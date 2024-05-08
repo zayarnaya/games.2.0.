@@ -27,9 +27,6 @@ export const Knight = () => {
 	const highscore = localStorage.getItem('knight-highscore') || 0;
 	const bestTime = localStorage.getItem('knight-besttime') || '00:00:00';
 
-	// console.log(field);
-	// console.log(history);
-
 	const checkLegit = (row: number, col: number) => {
 		if (!coords.length) return true;
 		const diff = [coords[0] - row, coords[1] - col] as [number, number];
@@ -46,11 +43,7 @@ export const Knight = () => {
 				removeHint(coords as [number, number]);
 			}
 			const oldHistory = [...history];
-			oldHistory.push({
-				coords,
-				count,
-				field: [...field],
-			});
+			oldHistory.push(coords);
 			setHistory(oldHistory);
 			setCoords([row, col]);
 			setCount(count + 1);
@@ -139,12 +132,15 @@ export const Knight = () => {
 		setCount(1);
 	};
 
-	const onCancel = () => {
+	const onUndo = () => {
 		const oldHistory = [...history];
-		const { count, coords, field } = oldHistory.pop();
-		setCoords(coords);
-		setCount(count);
-		setField([...field]);
+		const oldCoords = oldHistory.pop();
+		const [i, k] = [...coords];
+		const oldField = [...field];
+		oldField[i][k].value = 0;
+		setCoords(oldCoords);
+		setCount(count - 1);
+		setField([...oldField]);
 		setHistory(oldHistory);
 	};
 
@@ -187,7 +183,7 @@ export const Knight = () => {
 						<Button size={'md'} onClick={onSave}>Сохранить</Button>
 						<Button size={'md'} onClick={onLoad}>Загрузить</Button>
 						<Button size={'md'} onClick={onRestart}>Начать сначала</Button>
-						<Button size={'md'} onClick={onCancel} disabled={!history.length}>
+						<Button size={'md'} onClick={onUndo} disabled={!history.length}>
 							Отменить ход
 						</Button>
 						<Button size='sm' onClick={onPauseClick}>Пауза</Button>
