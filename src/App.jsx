@@ -15,15 +15,16 @@ const App = () => {
 	return (
 		<StrictMode>
 			<BrowserRouter basename={process.env.REACT_APP_BASE_URL}>
+			{/* <BrowserRouter basename='/games.2.0./'> */}
 				<Header />
 				<MainContentWrapper>
 					<Sidebar links={menuLinks} />
 					<Suspense fallback={<Spinner />}>
 						<Routes>
-							{/* <Route path='/' element={<Line />} />
-							<Route path='/knight' element={<Knight />} /> */}
-							<Route path='/' element={<Knight />} />
-							<Route path='/knight' element={<Line />} />
+							<Route path='/' element={<Line />} />
+							<Route path='/knight' element={<Knight />} />
+							{/* <Route path='/' element={<Knight />} />
+							<Route path='/knight' element={<Line />} /> */}
 						</Routes>
 					</Suspense>
 				</MainContentWrapper>

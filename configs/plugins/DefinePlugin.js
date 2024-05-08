@@ -6,7 +6,6 @@ module.exports = (env) => {
   const currentPath = path.join(__dirname, '/../..');
   const basePath = currentPath + '/.env';
   const envPath = basePath + '.' + env;
-  console.log(envPath);
   const fileEnv = dotenv.config({ path: envPath }).parsed;
   
   const envKeys = Object.keys(fileEnv).reduce((prev, next) => {

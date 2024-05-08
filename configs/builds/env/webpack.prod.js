@@ -15,11 +15,10 @@ module.exports = {
 		clean: true,
 		assetModuleFilename: path.join('assets', '[name].[contenthash][ext]'),
 	},
-	plugins: [envPlugin],
+	plugins: [envPlugin, MiniCssExtractPluginInstance],
 	module: {
 		rules: [styles, styles_modules],
 	},
-	plugins: [MiniCssExtractPluginInstance],
 	optimization: {
 		splitChunks: {
 			maxSize: 25000,

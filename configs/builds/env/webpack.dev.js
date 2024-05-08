@@ -3,8 +3,6 @@ const envPlugin = require('../../plugins/DefinePlugin')('development');
 const styles = require('../../rules/styles')();
 const styles_modules = require('../../rules/style_modules')();
 
-console.log(envPlugin);
-
 module.exports = {
 	mode: 'development',
 	output: {
