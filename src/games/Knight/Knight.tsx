@@ -111,7 +111,6 @@ export const Knight = () => {
 			field,
 			timer: getTime(),
 		};
-		console.log(data2save);
 		localStorage.setItem('knight-save', JSON.stringify(data2save));
 	};
 

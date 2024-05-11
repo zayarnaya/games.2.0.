@@ -19,7 +19,6 @@ export const checkHorizontal = (array: LineItem[], m: number, l: number) => {
 
 export const checkVertical = (array: LineItem[], m: number, l: number) => {
 	if (array[m].value !== array[l].value && array[m].value + array[l].value !== 10) {
-		console.log(1);
 		return false;
 	}
 
@@ -31,7 +30,6 @@ export const checkVertical = (array: LineItem[], m: number, l: number) => {
 	if (col1 !== col2) return false;
 	for (let i = Math.min(m, l) + 9; i < Math.max(m, l); i += 9) {
 		if (!array[i].deleted) {
-			console.log(2);
 			return false;
 		}
 	}

@@ -46,7 +46,6 @@ export const Timer:FC<Props> = forwardRef<HTMLDivElement, Props>((props: Props, 
     
     useEffect(() => {
         return () => {
-            // console.log('UNMOUNT');
             clearTimeout(timerRef.current);
         }
     }, []);
