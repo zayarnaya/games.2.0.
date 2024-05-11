@@ -10,7 +10,7 @@ type Props = {
     pause?: boolean,
 };
 
-export const Timer:FC<Props> = forwardRef((props: Props, ref: LegacyRef<HTMLDivElement>) => {
+export const Timer:FC<Props> = forwardRef<HTMLDivElement, Props>((props: Props, ref: LegacyRef<HTMLDivElement>) => {
     const { className, time, pause } = props;
 
     const timer = useMemo(() => {

@@ -20,7 +20,7 @@ export const Knight = () => {
 	const [coords, setCoords] = useState([]);
 	const [needHint, setNeedHint] = useState(false);
 	const [history, setHistory] = useState([]);
-	const timerRef = useRef(null);
+	const timerRef = useRef<HTMLDivElement>(null);
 	const [timer, setTimer] = useState('');
 	const [pause, setPause] = useState(false);
 
