@@ -1,15 +1,8 @@
-import React, { FC, ReactNode } from 'react';
-import classNames from 'classnames';
+import React, { FC } from 'react';
 
 import styles from './KnightFieldPatch.module.scss';
 
-interface Props {
-    className?: string,
-    children?: ReactNode,
-};
-
-export const KnightFieldPatch:FC<Props> = (props: Props) => {
-    const { children, className } = props;
+export const KnightFieldPatch:FC = () => {
     return (
         <div className={styles.patch}>
             <p className={styles['patch__message']}>пауза</p>
