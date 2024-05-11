@@ -11,16 +11,11 @@ import { LineLayout } from './layouts/LineLayout/LineLayout';
 import { RulesLayout } from '../../views/layouts/RulesLayout/RulesLayout';
 
 export const Line = () => {
-	console.log(rules);
 	const defaultArray = getDefaultArray();
 
 	const [coords, setCoords] = useState(-1);
 	const [arr, setArr] = useState<LineItem[]>(defaultArray);
-	const [history, setHistory] = useState([
-		{
-			arr: defaultArray,
-		},
-	]);
+	const [history, setHistory] = useState([]);
 
 	const handleClick = (index: number) => {
 		if (coords === -1) {
@@ -35,14 +30,9 @@ export const Line = () => {
 			setArr(newArr);
 		} else {
 			if (checkHorizontal(arr, coords, index) || checkVertical(arr, coords, index)) {
-				const old = [...history];
-				const arr4history = arr.slice().map(item => {
-					return item.active ? { ...item, active: false } : item;
-				});
-				old.push({
-					arr: arr4history,
-				});
-				setHistory(old);
+				const oldBrief = [...history];
+				oldBrief.push([index, coords]);
+				setHistory(oldBrief);
 				const newArr = [...arr];
 				newArr[index] = { ...newArr[index], deleted: true, active: false };
 				newArr[coords] = { ...newArr[coords], deleted: true, active: false };
@@ -54,6 +44,8 @@ export const Line = () => {
 	};
 	const onSubmit = () => {
 		const submitArr = [...arr];
+		const oldBrief = [...history];
+		oldBrief.push(['submit', [...submitArr]]);
 		const arr2Copy = submitArr.filter(item => !item.deleted).map(item => item.value);
 		if (!arr2Copy.length) {
 			alert('Ура, победа!');
@@ -63,6 +55,7 @@ export const Line = () => {
 			submitArr.push({ ...defaultItem, value: num });
 		}
 		setArr(submitArr);
+		setHistory(oldBrief);
 	};
 
 	const onStart = () => {
@@ -71,11 +64,18 @@ export const Line = () => {
 	};
 
 	const onCancel = () => {
-		const oldHistory = [...history];
-		const { arr } = oldHistory.pop();
-		setCoords(-1);
-		setArr(arr);
-		setHistory(oldHistory);
+		const oldBrief = [...history];
+		const [index, coords] = oldBrief.pop();
+		if (index === 'submit') {
+			setArr(coords);
+		} else {
+			const oldArr = [...arr];
+			oldArr[index].deleted = false;
+			oldArr[coords].deleted = false;
+			setArr(oldArr);
+		}
+		setHistory(oldBrief);
+	
 	};
 
 	const onSave = () => {
@@ -116,7 +116,7 @@ export const Line = () => {
 						<Button onClick={onStart} size={'md'}>
 							Начать заново
 						</Button>
-						<Button size={'md'} disabled={history.length === 1} onClick={onCancel}>
+						<Button size={'md'} disabled={history.length === 0} onClick={onCancel}>
 							Отменить ход
 						</Button>
 						<Button size={'md'} onClick={onSave}>
