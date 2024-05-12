@@ -3,3 +3,8 @@ export type LineItem = {
 	deleted: boolean;
 	value: number;
 };
+
+export type LineHistoryItem = {
+	idx: [number, number] | [];
+	length: number;
+}

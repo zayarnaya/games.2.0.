@@ -1,7 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
+import lineReducer from './slices/LineSlice';
 
 export const store = configureStore({
   reducer: {
+    line: lineReducer,
   },
 });
 
