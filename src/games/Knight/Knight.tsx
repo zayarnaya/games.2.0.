@@ -1,9 +1,8 @@
-import React, { useRef, useState } from 'react';
-import { getDefaultField, getRowAndCol, isEqualDiff } from './helpers';
-import { legitMoves } from './consts';
+import React, { useEffect, useRef, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { getIndexFromRowAndCol, getRowAndCol } from './helpers';
 import rules from './rules.html';
 import { GameLayout } from '../../views/layouts/GameLayout/GameLayout';
-import styles from './Knight.module.scss';
 import { KnightButton } from './components/KnightButton/KnightButton';
 import { KnightField } from './components/KnightField/KnightField';
 import { RulesLayout } from '../../views/layouts/RulesLayout/RulesLayout';
@@ -12,62 +11,44 @@ import { Timer } from '../../views/components/Timer/Timer';
 import { Score } from './components/Score/Score';
 import { HighScore } from './components/HighScore/HighScore';
 import { KnightFieldPatch } from './components/KnightFieldPatch/KnightFieldPatch';
+import type { RootState } from '../../store/store';
+import { onNextMove, setWrongMove, removeWrongMove, onUndoMove, restart, onLoadGame } from '../../store/slices/KnightSlice';
 
+// todo проверить вин и фейл
 export const Knight = () => {
-	const defaultField = getDefaultField();
-	const [count, setCount] = useState(1);
-	const [field, setField] = useState(defaultField);
+	const { count, field, history, win, fail} = useSelector((state: RootState) => state.knight);
 	const [coords, setCoords] = useState([]);
 	const [needHint, setNeedHint] = useState(false);
-	const [history, setHistory] = useState([]);
 	const timerRef = useRef<HTMLDivElement>(null);
 	const [timer, setTimer] = useState('');
 	const [pause, setPause] = useState(false);
 
+
+	const dispatch = useDispatch();
+
 	const highscore = localStorage.getItem('knight-highscore') || 0;
 	const bestTime = localStorage.getItem('knight-besttime') || '00:00:00';
 
-	const checkLegit = (row: number, col: number) => {
-		if (!coords.length) return true;
-		const diff = [coords[0] - row, coords[1] - col] as [number, number];
-		for (let move of legitMoves) {
-			if (isEqualDiff(move, diff)) return true;
-		}
-		return false;
-	};
+	useEffect(() => {
+		if (win) onWin();
+	}, [win]);
+	useEffect(() => {
+		if (fail) onFail();
+	}, [fail]);
 
 	const handleClick = (index: number) => {
 		const { row, col } = getRowAndCol(index);
-		if (checkLegit(row, col)) {
-			if (needHint && coords.length) {
-				removeHint(coords as [number, number]);
-			}
-			const oldHistory = [...history];
-			oldHistory.push(coords);
-			setHistory(oldHistory);
+		if (field[row][col].hint === true || !coords.length) {
+			dispatch(onNextMove({coords, coords2: [row, col]}));
 			setCoords([row, col]);
-			setCount(count + 1);
-			const newField = [...field];
-			newField[row][col] = { ...newField[row][col], value: count };
-			setField(newField);
-			if (count === 100) onWin();
-			if (needHint) setHint([row, col]);
+		} else {
+			dispatch(setWrongMove([row, col]));
+			setTimeout(() => dispatch(removeWrongMove([row, col])), 1000);
 		}
 	};
 
 	const onNeedHint = () => {
 		setNeedHint(!needHint);
-	};
-
-	const removeHint = (coords: [number, number]) => {
-		const [row, col] = coords;
-		const newField = [...field];
-		for (let move of legitMoves) {
-			if (newField[row + move[0]] && newField[row + move[0]][col + move[1]]) {
-				newField[row + move[0]][col + move[1]] = { ...newField[row + move[0]][col + move[1]], hint: false };
-			}
-		}
-		setField(newField);
 	};
 
 	const onFail = () => {
@@ -86,24 +67,6 @@ export const Knight = () => {
 		}
 	}
 
-	const setHint = (coords: [number, number]) => {
-		const [row, col] = coords;
-		const newField = [...field];
-		let count = 0;
-		for (let move of legitMoves) {
-			if (
-				newField[row + move[0]] &&
-				newField[row + move[0]][col + move[1]] &&
-				!newField[row + move[0]][col + move[1]].value
-			) {
-				count++;
-				newField[row + move[0]][col + move[1]] = { ...newField[row + move[0]][col + move[1]], hint: true };
-			}
-		}
-		if (!count) onFail();
-		setField(newField);
-	};
-
 	const onSave = () => {
 		const data2save = {
 			coords,
@@ -116,31 +79,21 @@ export const Knight = () => {
 
 	const onLoad = () => {
 		const rawData = localStorage.getItem('knight-save');
-		if (rawData) {
-			const { coords, count, field, timer } = JSON.parse(rawData);
+		if (typeof rawData !== 'undefined') {
+			const parsedData = JSON.parse(rawData);
+			const {coords} = parsedData;
 			setCoords(coords);
-			setCount(count);
-			setField(field);
-			setTimer(timer);
+			dispatch(onLoadGame(parsedData));
 		}
 	};
 
 	const onRestart = () => {
-		setField(defaultField);
+		dispatch(restart());
 		setCoords([]);
-		setCount(1);
 	};
 
 	const onUndo = () => {
-		const oldHistory = [...history];
-		const oldCoords = oldHistory.pop();
-		const [i, k] = [...coords];
-		const oldField = [...field];
-		oldField[i][k].value = 0;
-		setCoords(oldCoords);
-		setCount(count - 1);
-		setField([...oldField]);
-		setHistory(oldHistory);
+		dispatch(onUndoMove());
 	};
 
 	const getTime = () => {
@@ -165,6 +118,8 @@ export const Knight = () => {
 							hint={needHint && item.hint}
 							onClick={() => handleClick(index)}
 							disabled={item.value != 0}
+							wrong={item.wrong}
+							lastChosen={getIndexFromRowAndCol(coords[0], coords[1]) === index}
 						>
 							{item.value === 0 ? '' : item.value}
 						</KnightButton>
@@ -173,7 +128,7 @@ export const Knight = () => {
 			</KnightField>
 			<RulesLayout>
 				<Timer ref={timerRef} time={timer} pause={pause}/>
-				<Score>{count - 1}</Score>
+				<Score>{count}</Score>
 				<HighScore />
 				<div>
 					<h3>Игровое меню</h3>
