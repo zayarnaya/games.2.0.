@@ -1,12 +1,6 @@
-/*!
-	Copyright (c) 2018 Jed Watson.
-	Licensed under the MIT License (MIT), see
-	http://jedwatson.github.io/classnames
-*/
-
 /**
  * @license React
- * react.production.min.js
+ * scheduler.production.min.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
@@ -16,7 +10,7 @@
 
 /**
  * @license React
- * scheduler.production.min.js
+ * use-sync-external-store-with-selector.production.min.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
