@@ -12,15 +12,14 @@ import { Score } from './components/Score/Score';
 import { HighScore } from './components/HighScore/HighScore';
 import { KnightFieldPatch } from './components/KnightFieldPatch/KnightFieldPatch';
 import type { RootState } from '../../store/store';
-import { onNextMove, setWrongMove, removeWrongMove, onUndoMove, restart, onLoadGame } from '../../store/slices/KnightSlice';
+import { onNextMove, setWrongMove, removeWrongMove, onUndoMove, restart, onLoadGame, startTimer } from '../../store/slices/KnightSlice';
 
 // todo проверить вин и фейл
 export const Knight = () => {
-	const { count, field, history, win, fail} = useSelector((state: RootState) => state.knight);
+	const { count, field, history, win, fail, time} = useSelector((state: RootState) => state.knight);
 	const [coords, setCoords] = useState([]);
 	const [needHint, setNeedHint] = useState(false);
 	const timerRef = useRef<HTMLDivElement>(null);
-	const [timer, setTimer] = useState('');
 	const [pause, setPause] = useState(false);
 
 
@@ -37,6 +36,9 @@ export const Knight = () => {
 	}, [fail]);
 
 	const handleClick = (index: number) => {
+		if (!coords.length) {
+			dispatch(startTimer());
+		}
 		const { row, col } = getRowAndCol(index);
 		if (field[row][col].hint === true || !coords.length) {
 			dispatch(onNextMove({coords, coords2: [row, col]}));
@@ -56,7 +58,6 @@ export const Knight = () => {
 		if (count > +highscore) {
 			localStorage.setItem('knight-highscore', (count).toString());
 		}
-		// setCount(count - 1);
 	}
 
 	const onWin = () => {
@@ -72,7 +73,7 @@ export const Knight = () => {
 			coords,
 			count,
 			field,
-			timer: getTime(),
+			time: getTime(),
 		};
 		localStorage.setItem('knight-save', JSON.stringify(data2save));
 	};
@@ -107,6 +108,10 @@ export const Knight = () => {
 		setPause(!pause);
 	}
 
+	const onDeleteHighscore = () => {
+		localStorage.setItem('knight-highscore', '0');
+	}
+
 	return (
 		<GameLayout>
 			<KnightField>
@@ -114,8 +119,8 @@ export const Knight = () => {
 				{field.flat().map((item, index) => {
 					return (
 						<KnightButton
-							// className={needHint && item.hint ? 'green' : ''}
 							hint={needHint && item.hint}
+							needHint={needHint}
 							onClick={() => handleClick(index)}
 							disabled={item.value != 0}
 							wrong={item.wrong}
@@ -127,7 +132,7 @@ export const Knight = () => {
 				})}
 			</KnightField>
 			<RulesLayout>
-				<Timer ref={timerRef} time={timer} pause={pause}/>
+				<Timer ref={timerRef} time={time} pause={pause}/>
 				<Score>{count}</Score>
 				<HighScore />
 				<div>
@@ -140,6 +145,7 @@ export const Knight = () => {
 						<Button size={'md'} onClick={onUndo} disabled={!history.length}>
 							Отменить ход
 						</Button>
+						<Button size={'md'} onClick={onDeleteHighscore}>Сбросить рекорд</Button>
 						<Button size='sm' onClick={onPauseClick}>Пауза</Button>
 					</div>
 				</div>

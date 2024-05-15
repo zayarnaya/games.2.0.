@@ -7,7 +7,7 @@ export interface KnightState {
     field: FieldItem[][],
     count: number,
     history: number[][],
-    timer: string,
+    time: string,
     win: boolean,
     fail: boolean,
 }
@@ -18,7 +18,7 @@ const initialState: KnightState = {
     field: defaultField,
     count: 0,
     history: [],
-    timer: '00:00:00',
+    time: '',
     win: false,
     fail: false,
 }
@@ -35,6 +35,7 @@ export const knightSlice = createSlice({
             state.field[row][col].value = state.count;
             if (state.count === 100) {
                 state.win = true;
+                return;
             }
             const history = state.history;
             history.push([row, col]);
@@ -72,12 +73,18 @@ export const knightSlice = createSlice({
             for (let key in state) {
                 state[key] = loadData[key] || initialState[key];
             }
+        },
+        startTimer: (state) => {
+            state.time = '00:00:00';
+        },
+        resetTimer: (state) => {
+            state.time = initialState.time;
         }
     },
 })
 
 // todo разобраться с типами
 // todo убрать дубли в помощниках
-export const { onNextMove, setWrongMove, removeWrongMove, onUndoMove, restart, onLoadGame } = knightSlice.actions;
+export const { startTimer, resetTimer, onNextMove, setWrongMove, removeWrongMove, onUndoMove, restart, onLoadGame } = knightSlice.actions;
 
 export default knightSlice.reducer;

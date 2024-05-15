@@ -2,7 +2,7 @@ import React, { FC, forwardRef, LegacyRef, ReactNode, useEffect, useMemo, useRef
 import classNames from 'classnames';
 
 import styles from './Timer.module.scss';
-import { getTime, parseTime } from './helpers';
+import { parseTime } from './helpers';
 
 type Props = {
     className?: string,
@@ -13,23 +13,21 @@ type Props = {
 export const Timer:FC<Props> = forwardRef<HTMLDivElement, Props>((props: Props, ref: LegacyRef<HTMLDivElement>) => {
     const { className, time, pause } = props;
 
-    const timer = useMemo(() => {
-        if (time) {
-            const [hours, mins, secs] = parseTime(time);
-            return {hours, mins, secs};
-        }
-        return null;
-    }, [time]);
-
-    const [hour, setHour] = useState(timer?.hours || 0);
-    const [min, setMin] = useState(timer?.mins || 0);
-    const [sec, setSec] = useState(timer?.secs || 0);
+    const [hour, setHour] = useState(0);
+    const [min, setMin] = useState(0);
+    const [sec, setSec] = useState(0);
+    const [tick, setTick] = useState(false);
     const timerRef = useRef(null);
 
-    const start = Date.now();
+    const timer = () => {
+        if (!pause && time) setTick(!tick);
+    }
 
-    timerRef.current = setTimeout(() => {
-        if (!pause) {
+    timerRef.current = setTimeout(timer, 1000); // ну пока так работает а там надо как-то по уму, без четырех ререндеров
+
+
+    useEffect(() => {
+        if (time) {
             setSec(sec + 1);
             if (sec === 59) {
                 setSec(0);
@@ -40,15 +38,24 @@ export const Timer:FC<Props> = forwardRef<HTMLDivElement, Props>((props: Props, 
                 setHour(hour + 1);
             }
         }
+    }, [tick]);
 
-    }, 1000); // ну пока так работает а там надо как-то по уму, без четырех ререндеров
-
-    
     useEffect(() => {
-        return () => {
-            clearTimeout(timerRef.current);
+        if (time) {
+            const [hours, mins, secs] = parseTime(time);
+            setMin(mins);
+            setHour(hours);
+            setSec(secs);
+        } else {
+            setMin(0);
+            setHour(0);
+            setSec(0);
         }
-    }, []);
+    }, [time]);
+
+    useEffect(() => {
+        clearTimeout(timerRef.current);  
+    })
 
 
     // с форматированием бы разобраться бы

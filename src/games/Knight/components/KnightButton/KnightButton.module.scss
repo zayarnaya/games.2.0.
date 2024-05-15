@@ -16,7 +16,12 @@
 }
 
 .hint {
-    box-shadow: 0 0 2px 2px green inset;
+    // box-shadow: 0 0 2px 2px green inset;
+    // background-color: white;
+}
+
+.need-hint:not(.hint, .last-chosen) {
+    background-color: #dfdfdf;
 }
 
 .wrong {
