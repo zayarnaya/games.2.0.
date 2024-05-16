@@ -23,10 +23,10 @@ const App = () => {
 						<Sidebar links={menuLinks} />
 						<Suspense fallback={<Spinner />}>
 							<Routes>
-								{/* <Route path='/' element={<Line />} />
-								<Route path='/knight' element={<Knight />} /> */}
-								<Route path='/' element={<Knight />} />
-								<Route path='/knight' element={<Line />} />
+								<Route path='/' element={<Line />} />
+								<Route path='/knight' element={<Knight />} />
+								{/* <Route path='/' element={<Knight />} />
+								<Route path='/knight' element={<Line />} /> */}
 							</Routes>
 						</Suspense>
 					</MainContentWrapper>

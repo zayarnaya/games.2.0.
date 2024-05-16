@@ -33,7 +33,7 @@ export const knightSlice = createSlice({
             state.count++;
             const newField = removeHint(coords, state.field);
             state.field[row][col].value = state.count;
-            if (state.count === 100) {
+            if (state.count === 5) {
                 state.win = true;
                 return;
             }

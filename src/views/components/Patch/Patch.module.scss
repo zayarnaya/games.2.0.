@@ -1,7 +1,6 @@
 .patch {
     position: absolute;
-    width: 400px;
-    height: 400px;
+    width: 100%;
     z-index: 1500;
     background-color: aquamarine;
 
@@ -12,5 +11,13 @@
         text-transform: uppercase;
         margin: 50% auto;
         transform: translateY(-50%);
+    }
+
+    &_knight {
+        height: 400px;
+    }
+
+    &_line {
+        height: calc(100vh - 300px);
     }
 }

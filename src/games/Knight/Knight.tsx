@@ -8,9 +8,9 @@ import { KnightField } from './components/KnightField/KnightField';
 import { RulesLayout } from '../../views/layouts/RulesLayout/RulesLayout';
 import { Button } from '../../views/components/Button/Button';
 import { Timer } from '../../views/components/Timer/Timer';
-import { Score } from './components/Score/Score';
+import { Score } from '../../views/components/Score/Score';
 import { HighScore } from './components/HighScore/HighScore';
-import { KnightFieldPatch } from './components/KnightFieldPatch/KnightFieldPatch';
+import { Patch } from '../../views/components/Patch/Patch';
 import type { RootState } from '../../store/store';
 import { onNextMove, setWrongMove, removeWrongMove, onUndoMove, restart, onLoadGame, startTimer } from '../../store/slices/KnightSlice';
 
@@ -21,12 +21,10 @@ export const Knight = () => {
 	const [needHint, setNeedHint] = useState(false);
 	const timerRef = useRef<HTMLDivElement>(null);
 	const [pause, setPause] = useState(false);
-
+	const [highscore, setHighscore] = useState(+localStorage.getItem('knight-highscore') || 0);
+	const [bestTime, setBestTime] = useState(localStorage.getItem('knight-besttime') || '99:99:99')
 
 	const dispatch = useDispatch();
-
-	const highscore = localStorage.getItem('knight-highscore') || 0;
-	const bestTime = localStorage.getItem('knight-besttime') || '00:00:00';
 
 	useEffect(() => {
 		if (win) onWin();
@@ -34,6 +32,18 @@ export const Knight = () => {
 	useEffect(() => {
 		if (fail) onFail();
 	}, [fail]);
+
+	const saveHighscore = () => {
+		localStorage.setItem('knight-highscore', (Math.max(highscore, count)).toString())
+		setHighscore(Math.max(highscore, count));
+	}
+
+	const saveBestTime = () => {
+		const time = getTime();
+		const best = time < bestTime ? time : bestTime;
+		localStorage.setItem('knight-besttime', best);
+		setBestTime(best);
+	}
 
 	const handleClick = (index: number) => {
 		if (!coords.length) {
@@ -55,17 +65,19 @@ export const Knight = () => {
 
 	const onFail = () => {
 		alert('Вы проиграли!' + 'Ваш счет: ' + (count));
-		if (count > +highscore) {
-			localStorage.setItem('knight-highscore', (count).toString());
-		}
+		// if (count > +highscore) {
+		// 	localStorage.setItem('knight-highscore', (count).toString());
+		// }
+		saveHighscore();
 	}
 
 	const onWin = () => {
-		const winTime = timerRef?.current?.dataset?.time || '00:00:00';
+		// const winTime = timerRef?.current?.dataset?.time || '00:00:00';
 		alert('Вы выиграли! Ваше время ' + timerRef.current.dataset.time);
-		if (winTime.localeCompare(bestTime) > 0) {
-			localStorage.setItem('knight-besttime', winTime);
-		}
+		// if (winTime.localeCompare(bestTime) > 0) {
+		// 	localStorage.setItem('knight-besttime', winTime);
+		// }
+		saveBestTime();
 	}
 
 	const onSave = () => {
@@ -89,6 +101,7 @@ export const Knight = () => {
 	};
 
 	const onRestart = () => {
+		saveHighscore();
 		dispatch(restart());
 		setCoords([]);
 	};
@@ -115,7 +128,7 @@ export const Knight = () => {
 	return (
 		<GameLayout>
 			<KnightField>
-				{pause && <KnightFieldPatch />}
+				{pause && <Patch game='knight' />}
 				{field.flat().map((item, index) => {
 					return (
 						<KnightButton
@@ -134,19 +147,20 @@ export const Knight = () => {
 			<RulesLayout>
 				<Timer ref={timerRef} time={time} pause={pause}/>
 				<Score>{count}</Score>
-				<HighScore />
+				<div>Рекорд: {highscore}</div>
+				<div>Лучшее время: {bestTime}</div>
 				<div>
 					<h3>Игровое меню</h3>
 					<div>
 						<Button size={'md'} onClick={onNeedHint}>{needHint ? 'Выключить подсказку' : 'Включить подсказку'}</Button>
 						<Button size={'md'} onClick={onSave}>Сохранить</Button>
 						<Button size={'md'} onClick={onLoad}>Загрузить</Button>
-						<Button size={'md'} onClick={onRestart}>Начать сначала</Button>
+						<Button size={'md'} onClick={onRestart}>{win || fail ? 'Новая игра' : 'Начать заново'}</Button>
 						<Button size={'md'} onClick={onUndo} disabled={!history.length}>
 							Отменить ход
 						</Button>
 						<Button size={'md'} onClick={onDeleteHighscore}>Сбросить рекорд</Button>
-						<Button size='sm' onClick={onPauseClick}>Пауза</Button>
+						<Button size='md' disabled={coords.length === 0} onClick={onPauseClick}>{pause ? 'Вернуться к игре' : 'Пауза'}</Button>
 					</div>
 				</div>
 				<div dangerouslySetInnerHTML={{ __html: rules }} />
