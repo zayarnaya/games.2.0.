@@ -12,6 +12,7 @@ import { menuLinks } from './consts/menuLinks';
 import { Header } from './views/components/Header/Header';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
+import { Tetris } from './games/Tetris/Tetris';
 
 const App = () => {
 	return (
@@ -23,10 +24,10 @@ const App = () => {
 						<Sidebar links={menuLinks} />
 						<Suspense fallback={<Spinner />}>
 							<Routes>
-								<Route path='/' element={<Line />} />
+								{/* <Route path='/' element={<Line />} />
 								<Route path='/knight' element={<Knight />} />
-								{/* <Route path='/' element={<Knight />} />
-								<Route path='/knight' element={<Line />} /> */}
+								<Route path='/tetris' element = {<Tetris />} /> */}
+								<Route path='/' element={<Tetris />} />
 							</Routes>
 						</Suspense>
 					</MainContentWrapper>

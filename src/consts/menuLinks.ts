@@ -7,4 +7,8 @@ export const menuLinks = [
 		name: 'Ход конем',
 		href: 'knight',
 	},
+	{
+		name: 'Тетрис',
+		href: 'tetris',
+	}
 ];
