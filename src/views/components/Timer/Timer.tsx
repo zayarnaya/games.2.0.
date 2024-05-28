@@ -27,7 +27,7 @@ export const Timer:FC<Props> = forwardRef<HTMLDivElement, Props>((props: Props, 
 
 
     useEffect(() => {
-        if (time) {
+        if (!pause && time) {
             setSec(sec + 1);
             if (sec === 59) {
                 setSec(0);
