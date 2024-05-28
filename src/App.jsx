@@ -17,7 +17,7 @@ const App = () => {
 	return (
 		<StrictMode>
 			<Provider store={store}>
-				<BrowserRouter basename={process.env.REACT_APP_BASE_URL}>
+				<BrowserRouter basename={process.env.GAMES_BASE_URL}>
 					<Header />
 					<MainContentWrapper>
 						<Sidebar links={menuLinks} />
