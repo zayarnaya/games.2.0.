@@ -14,7 +14,7 @@ import rules from './rules.html';
 import { Score } from '../../views/components/Score/Score';
 
 export const Tetris:FC = () => {
-    const { width, height, cellSize } = dimensions;
+    const { width, height, cellSize, figWidth, figHeight } = dimensions;
     const [playField, setPlayField] = useState([]);
 
     const [currentTetromino, setCurrentTetromino] = useState(null);
@@ -36,6 +36,7 @@ export const Tetris:FC = () => {
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const canvasRefFigure = useRef<HTMLCanvasElement>(null);
+    const timerRef = useRef<HTMLDivElement>(null);
     const timestampRef = useRef(null);
 
     useEffect(() => {
@@ -143,13 +144,14 @@ export const Tetris:FC = () => {
                         if (nextTetromino.name === 'O') margin = 2;
                        
                         contextFigure.fillStyle = colors[nextTetromino.name as Sequence];
-                        contextFigure.fillRect(
-                            (k + margin) * (cellSize / 1.5),
-                            (i + margin) * (cellSize / 1.5),
-                            cellSize / 1.5 - 1,
-                            cellSize / 1.5 - 1,
-                        )
-
+                        if (nextTetromino.matrix[i][k]) {
+                            contextFigure.fillRect(
+                                (k + margin) * (cellSize),
+                                (i + margin) * (cellSize),
+                                cellSize - 1,
+                                cellSize - 1,
+                            )
+                        }
                     }
                 }
             }
@@ -187,7 +189,9 @@ export const Tetris:FC = () => {
         }
     }, [ctx, playField, currentTetromino, nextTetromino])
 
-    timestampRef.current = setTimeout(() => setTick(!tick), speed);
+    timestampRef.current = setTimeout(() => {
+        if (isGameStarted && !pause) setTick(!tick)
+    }, speed);
 
     const onStartGame = () => {
         setGameStarted(true);
@@ -344,7 +348,7 @@ export const Tetris:FC = () => {
                 </canvas>
             </div>
             <RulesLayout>
-                {/* <Timer ref={timerRef} time={time} pause={pause} /> */}
+                <Timer ref={timerRef} time={time} pause={pause} />
                 <Score>{score}</Score>
                 <div>Уровень {level}</div>
                 <div>Убрали линий {lineCount}</div>
@@ -353,7 +357,7 @@ export const Tetris:FC = () => {
                 <div>
                     <h3>Игровое меню</h3>
                     <p>следующая фигура</p>
-                    <canvas className={styles['next-figure']} ref={canvasRefFigure} id="canvas-figure"></canvas>
+                    <canvas className={styles['next-figure']} ref={canvasRefFigure} id="canvas-figure" width={figWidth * cellSize} height={figHeight * cellSize}></canvas>
                     <div>
                         <Button onClick={onStartGame} size={'md'}>Начать</Button>
                         {/* <Button size={'md'} disabled={history.length === 0} onClick={}>

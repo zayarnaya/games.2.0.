@@ -4,6 +4,8 @@ export const dimensions = {
     width: 10,
     height: 20,
     cellSize: 30,
+    figWidth: 6,
+    figHeight: 5,
 }
 export const tetrominos: Record<Sequence, TetrominoMatrix> = {
     I: [
