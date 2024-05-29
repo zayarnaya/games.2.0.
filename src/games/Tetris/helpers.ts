@@ -1,9 +1,36 @@
-import { Playfield, tetromino, TetrominoMatrix } from "./types";
+import { defaultSequence, dimensions, tetrominos } from "./consts";
+import { Playfield, Sequence, tetromino, TetrominoMatrix } from "./types";
 
-export const getRandomInt = (min: number, max: number) => {
+const getRandomInt = (min: number, max: number) => {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+const getRandomTetrominoName = () => {
+    const randomInt = getRandomInt(0, defaultSequence.length - 1);
+    return defaultSequence[randomInt];
+}
+
+const getNextTetromino = (name: Sequence) => {
+    const matrix = tetrominos[name];
+    const col = 4;
+    const row = name === 'I' ? -2 : -1;
+
+    return {name, matrix, row, col};
+}
+
+export const getRandomTetromino = () => getNextTetromino(getRandomTetrominoName());
+
+export const getDefaultPlayfield = (): Playfield => {
+    const newPlayField = [];
+        for (let row = -2; row < dimensions.height; row++) {
+            newPlayField[row] = [];
+            for (let col = 0; col < dimensions.width; col++) {
+                newPlayField[row][col] = undefined;
+            }
+        }
+    return newPlayField;
 }
 
 export const rotate = (matrix: TetrominoMatrix) => {

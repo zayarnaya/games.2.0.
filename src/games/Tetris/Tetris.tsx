@@ -2,8 +2,8 @@ import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 
 import styles from './Tetris.module.scss';
-import { colors, defaultSequence, dimensions, lineScore, tetrominos } from './consts';
-import { getRandomInt, isValidMove, rotate } from './helpers';
+import { colors, defaults, dimensions, lineScore } from './consts';
+import { getDefaultPlayfield, getRandomTetromino, isValidMove, rotate } from './helpers';
 import { Sequence } from './types';
 import { GameLayout } from '../../views/layouts/GameLayout/GameLayout';
 import { RulesLayout } from '../../views/layouts/RulesLayout/RulesLayout';
@@ -38,6 +38,12 @@ export const Tetris:FC = () => {
     const canvasRefFigure = useRef<HTMLCanvasElement>(null);
     const timerRef = useRef<HTMLDivElement>(null);
     const timestampRef = useRef(null);
+
+    const {score: bestScore, lineCount: bestLineCount, time: bestTime} = JSON.parse(localStorage.getItem('tetris-score')) || {
+        score: defaults.score,
+        lineCount: defaults.lineCount,
+        time: defaults.time,
+    };
 
     useEffect(() => {
         document.addEventListener('keydown', onKeyDown);
@@ -89,26 +95,20 @@ export const Tetris:FC = () => {
     }
 
     const setDefaults = () => {
-        const newPlayField = [];
-        for (let row = -2; row < height; row++) {
-            newPlayField[row] = [];
-            for (let col = 0; col < width; col++) {
-                newPlayField[row][col] = undefined;
-            }
-        }
-        setPlayField(newPlayField);
-        setScore(0);
-        setLevel(1);
-        setLineCount(0);
-        setSpeed(1000);
-        setGameStarted(false);
-        setGameOver(false);
-        setCurrentTetromino(getNextTetromino(getRandomTetrominoName()));
-        setNextTetromino(getNextTetromino(getRandomTetrominoName()));
+        setPlayField(getDefaultPlayfield());
+        setScore(defaults.score);
+        setLevel(defaults.level);
+        setLineCount(defaults.lineCount);
+        setSpeed(defaults.speed);
+        setGameStarted(defaults.isGameStarted);
+        setGameOver(defaults.gameOver);
+        setPause(defaults.pause)
+        setCurrentTetromino(getRandomTetromino());
+        setNextTetromino(getRandomTetromino());
     }
 
     const loop = useCallback(() => {
-        if (pause || gameOver) {
+        if (pause) {
             return;
         }
 
@@ -198,6 +198,28 @@ export const Tetris:FC = () => {
         setPause(false);
     }
 
+    const onRestartGame = () => {
+        setGameOver(false);
+        setDefaults();
+        onStartGame();
+    }
+
+    const onEndGame = () => {
+        const dataToSave = {
+            score: Math.max(score, bestScore), 
+            lineCount: Math.max(lineCount, bestLineCount), 
+            time: time.localeCompare(bestTime) > 0 ? time : bestTime};
+        localStorage.setItem('tetris-score', JSON.stringify(dataToSave));
+        setGameOver(true);
+
+        if (isGameStarted) alert('Игра закончена! Ваш счет ' + score + ', вы убрали ' + lineCount + ' линий за ' + time + '\nПоздравляем!')
+        setGameStarted(false);
+    }
+
+    const onPause = () => {
+        setPause(!pause);
+    }
+
     const onKeyDown = (e: KeyboardEvent) => {
         switch (e.code) {
             case 'ArrowUp':
@@ -237,7 +259,7 @@ export const Tetris:FC = () => {
               break;
             }
             case 'KeyP': {
-                setPause(!pause);
+                onPause();
               break;
             }
             case 'Space': {
@@ -266,19 +288,6 @@ export const Tetris:FC = () => {
           }
     }
 
-    const getRandomTetrominoName = () => {
-        const randomInt = getRandomInt(0, defaultSequence.length - 1);
-        return defaultSequence[randomInt];
-    }
-
-    const getNextTetromino = (name: Sequence) => {
-        const matrix = tetrominos[name];
-        const col = 4;
-        const row = name === 'I' ? -2 : -1;
-
-        return {name, matrix, row, col};
-    }
-
     const placeTetromino = () => {
         let linesAtOnce = 0;
         const newPlayfield = [...playField];
@@ -286,7 +295,8 @@ export const Tetris:FC = () => {
             for (let col = 0; col < currentTetromino.matrix[row].length; col++) {
                 if (currentTetromino.matrix[row][col]) {
                     if (currentTetromino.row + row < 0) {
-                        setGameOver(true);
+                        // onEndGame();
+                        console.log('END???');
                     }
                     newPlayfield[currentTetromino.row + row][currentTetromino.col + col] = currentTetromino.name;
                 }
@@ -326,15 +336,14 @@ export const Tetris:FC = () => {
         // заканчиваем игру, если вверху есть фигура и упирается в верх
         for (let i = 0; i < playField[0].length; i++) {
             if (playField[0][i] !== undefined) {
-                setGameOver(true);
+                onEndGame();
             }
         }
 
         // следующая фигура
         setCurrentTetromino(nextTetromino);
-        setNextTetromino(getNextTetromino(getRandomTetrominoName()));
+        setNextTetromino(getRandomTetromino());
         setPlayField(newPlayfield);
-
     }
 
 
@@ -348,28 +357,23 @@ export const Tetris:FC = () => {
                 </canvas>
             </div>
             <RulesLayout>
-                <Timer ref={timerRef} time={time} pause={pause} />
+                {/* <Timer ref={timerRef} time={time} pause={pause} /> */}
                 <Score>{score}</Score>
                 <div>Уровень {level}</div>
                 <div>Убрали линий {lineCount}</div>
-                {/* <div>Рекорд: {highscore}</div>
-                <div>Лучшее время: {bestTime}</div> */}
+                <div>Рекорд: {bestScore}</div>
+                <div>Максимальное количество убранных линий: {bestLineCount}</div>
+                <div>Самая долгая игра: {bestTime}</div>
                 <div>
                     <h3>Игровое меню</h3>
                     <p>следующая фигура</p>
                     <canvas className={styles['next-figure']} ref={canvasRefFigure} id="canvas-figure" width={figWidth * cellSize} height={figHeight * cellSize}></canvas>
                     <div>
-                        <Button onClick={onStartGame} size={'md'}>Начать</Button>
-                        {/* <Button size={'md'} disabled={history.length === 0} onClick={}>
-                            Отменить ход
+                        <Button onClick={isGameStarted ? onRestartGame : onStartGame} size={'md'}>{isGameStarted ? "Играть заново" : "Начать игру"}</Button>
+                        <Button size={'md'} disabled={!isGameStarted} onClick={onEndGame}>
+                            Закончить игру
                         </Button>
-                        <Button size={'md'} onClick={}>
-                            Сохранить
-                        </Button>
-                        <Button size={'md'} onClick={}>
-                            Загрузить
-                        </Button>
-                        <Button size='md' disabled={} onClick={}>{pause ? 'Вернуться к игре' : 'Пауза'}</Button> */}
+                        <Button size='md' disabled={!isGameStarted} onClick={onPause}>{pause ? 'Вернуться к игре' : 'Пауза'}</Button>
                     </div>
                 </div>
                 <div dangerouslySetInnerHTML={{ __html: rules }} />
