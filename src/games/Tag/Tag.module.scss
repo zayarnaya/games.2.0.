@@ -1,16 +1,18 @@
 .chip  {
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100px;
     height: 100px;
     border: 1px solid grey;
+    border-radius: 10%;
     transition: .3s;
+    background-color: white;
+    font-size: larger;
 
     &.empty {
-        background-color: lightgrey;
-    }
-
-    &.active {
-        border: 2px solid red;
+        background-color: transparent;
+        border: none;
     }
 
     &.moveRight {
@@ -34,5 +36,11 @@
     display: grid;
     grid-template-columns: repeat(4, 100px);
     grid-template-rows: repeat(4, 100px);
-    grid-gap: 0;
+    grid-gap: 2px;
+    background-color: lightgray;
+    border: 2px solid grey;
+    padding: 2px;
+    width: 414px;
+    height: 414px;
+    border-radius: 2%;
 }

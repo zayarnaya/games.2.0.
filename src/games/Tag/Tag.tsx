@@ -7,7 +7,6 @@ interface Props {
     className?: string,
     children?: ReactNode,
     value: number,
-    active?: boolean,
     move?: 'Up' | 'Down' | 'Left' | 'Right' | '',
     onClick: () => void,
     row: number,
@@ -16,7 +15,6 @@ interface Props {
 
 export type Tag = {
     value: number,
-    active: boolean,
     move: 'Up' | 'Down' | 'Left' | 'Right' | '',
 }
 
@@ -28,7 +26,6 @@ const makeDefaultArray = () => {
     return make2DTagArray(makeRandomArray().map(el => {
         return {
             value: el, 
-            active: false,
             move: '',
         }
     }));
@@ -74,56 +71,35 @@ const swapChips = (arr: TagArray, from: Coords, to: Coords) => {
 }
 
 export const TagChip:FC<Props> = (props: Props) => {
-    const { children, className, value, active = false, move, onClick, row, col } = props;
+    const { children, className, value, move, onClick, row, col } = props;
     return (
-        <div className={classNames(styles.chip, !value && styles.empty, active && styles.active, move && styles[`move${move}`])} onClick={onClick} data-row={row} data-col={col}>{value ? children : ''}</div>
+        <div className={classNames(styles.chip, !value && styles.empty, move && styles[`move${move}`])} onClick={onClick} data-row={row} data-col={col}>{value ? children : ''}</div>
     );
 }
 
 const legitMoves = [
-    '1,0',
-    '0,1',
-    '-1,0',
-    '0,-1'
+    [1,0],
+    [0,1],
+    [-1,0],
+    [0,-1]
 ];
-
-const checkLegit = (arr, from, to) => {
-    console.log(from, to);
-    const diff = [to[0] - from[0], to[1] - from[1]];
-    if (legitMoves.includes(diff.join(',')) && !arr[to[0]][to[1]].value) {
-        return true;
-    }
-    return false;
-}
 
 // const checkWin
 
 export const Tag:FC = () => {
     const [array, setArray] = useState<TagArray>(makeDefaultArray());
-    const [activeChip, setActiveChip] = useState([]);
 
     const handleClick = (e) => {
         const {row, col} = e.target.dataset;
-        let newArr = [];
-        for (let el of array) {
-            newArr.push([...el]);
-        }
-        if (!activeChip.length) {
-            setActiveChip([row, col]);
-            newArr[row][col].active = true;
-        } else if (activeChip[0] === row && activeChip[1] === col) {
-            setActiveChip([]);
-            newArr[row][col].active = false;
-        } else {
-            if (checkLegit(array, activeChip, [row, col])) {
-                newArr = swapChips(newArr, activeChip, [row, col]);
-                setActiveChip([]);
-                newArr[row][col].active = false;
-            } else {
-                console.log('NO');
+        console.log(row, col);
+        for (let move of legitMoves) {
+            let x = +row + move[0];
+            let y = +col + move[1];
+            if (x < 4 && x >= 0 && y < 4 && y >= 0 && array[x][y].value === 0) {
+                const newArray = swapChips(array, [row, col], [x, y]);
+                setArray(newArray);
             }
         }
-        setArray(newArr);
     }
 
     return (
