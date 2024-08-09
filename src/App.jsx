@@ -13,6 +13,8 @@ import { Header } from './views/components/Header/Header';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
 import { Tetris } from './games/Tetris/Tetris';
+import { Tag } from './games/Tag/Tag';
+import { Dots } from './games/Dots/Dots';
 
 const App = () => {
 	return (
@@ -27,7 +29,10 @@ const App = () => {
 								{/* <Route path='/' element={<Line />} />
 								<Route path='/knight' element={<Knight />} />
 								<Route path='/tetris' element = {<Tetris />} /> */}
-								<Route path='/' element={<Tetris />} />
+								{/* <Route path='/' element={<Tetris />} /> */}
+								{/* <Route path='/' element={<Tag />} />
+								 */}
+								<Route path='/' element={<Dots />} />
 							</Routes>
 						</Suspense>
 					</MainContentWrapper>
