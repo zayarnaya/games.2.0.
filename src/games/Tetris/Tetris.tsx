@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import styles from './Tetris.module.scss';
 import { colors, defaults, dimensions, lineScore } from './consts';
 import { getDefaultPlayfield, getRandomTetromino, isValidMove, rotate } from './helpers';
-import { Sequence } from './types';
+import { Playfield, Sequence } from './types';
 import { GameLayout } from '../../views/layouts/GameLayout/GameLayout';
 import { RulesLayout } from '../../views/layouts/RulesLayout/RulesLayout';
 import { Patch } from '../../views/components/Patch/Patch';
@@ -12,10 +12,11 @@ import { Timer } from '../../views/components/Timer/Timer';
 import { Button } from '../../views/components/Button/Button';
 import rules from './rules.html';
 import { Score } from '../../views/components/Score/Score';
+import { Modal } from '../../views/components';
 
 export const Tetris:FC = () => {
     const { width, height, cellSize, figWidth, figHeight } = dimensions;
-    const [playField, setPlayField] = useState([]);
+    const [playField, setPlayField] = useState<Playfield>([]);
 
     const [currentTetromino, setCurrentTetromino] = useState(null);
     const [nextTetromino, setNextTetromino] = useState(null);
@@ -38,6 +39,8 @@ export const Tetris:FC = () => {
     const canvasRefFigure = useRef<HTMLCanvasElement>(null);
     const timerRef = useRef<HTMLDivElement>(null);
     const timestampRef = useRef(null);
+
+    const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
 
     const {score: bestScore, lineCount: bestLineCount, time: bestTime} = JSON.parse(localStorage.getItem('tetris-score')) || {
         score: defaults.score,
@@ -212,8 +215,9 @@ export const Tetris:FC = () => {
         localStorage.setItem('tetris-score', JSON.stringify(dataToSave));
         setGameOver(true);
 
-        if (isGameStarted) alert('Игра закончена! Ваш счет ' + score + ', вы убрали ' + lineCount + ' линий за ' + time + '\nПоздравляем!')
+        if (isGameStarted) setIsFinishModalOpen(true);
         setGameStarted(false);
+        if (pause) setPause(false);
     }
 
     const onPause = () => {
@@ -349,6 +353,12 @@ export const Tetris:FC = () => {
 
     return (
         <GameLayout>
+            {isFinishModalOpen && <Modal onClose={() => setIsFinishModalOpen(false)}>
+                    <p>Игра закончена! <br />
+                    Ваш счет {score}, вы убрали {lineCount} линий за {time}.<br />
+                    Поздравляем!</p><br />
+                    <Button onClick={onRestartGame}>Новая игра</Button>
+                </Modal>}
             <div className={classNames(styles['field-tetris'])}>
 
                 {pause && <Patch game='tetris' /> }
@@ -369,7 +379,7 @@ export const Tetris:FC = () => {
                     <p>следующая фигура</p>
                     <canvas className={styles['next-figure']} ref={canvasRefFigure} id="canvas-figure" width={figWidth * cellSize} height={figHeight * cellSize}></canvas>
                     <div>
-                        <Button onClick={isGameStarted ? onRestartGame : onStartGame} size={'md'}>{isGameStarted ? "Играть заново" : "Начать игру"}</Button>
+                        <Button onClick={onRestartGame} size={'md'}>{isGameStarted ? "Играть заново" : "Начать игру"}</Button>
                         <Button size={'md'} disabled={!isGameStarted} onClick={onEndGame}>
                             Закончить игру
                         </Button>
