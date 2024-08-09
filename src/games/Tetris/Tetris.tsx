@@ -13,6 +13,7 @@ import { Button } from '../../views/components/Button/Button';
 import rules from './rules.html';
 import { Score } from '../../views/components/Score/Score';
 import { Modal } from '../../views/components';
+import { copyMatrix } from '../../utils';
 
 export const Tetris:FC = () => {
     const { width, height, cellSize, figWidth, figHeight } = dimensions;
@@ -77,7 +78,7 @@ export const Tetris:FC = () => {
     }, [ctx])
 
     useEffect(() => {
-        if (isGameStarted && !pause) requestAnimationFrame(loop);
+        if ((isGameStarted || gameOver) && !pause) requestAnimationFrame(loop);
     }, [tick, currentTetromino, nextTetromino])
 
 
@@ -173,17 +174,21 @@ export const Tetris:FC = () => {
 
                 // закрашиваем
 
-                context.fillStyle = gameOver ? 'gray' : colors[currentTetromino.name as Sequence];
+                context.fillStyle = gameOver ? 'lightgray' : colors[currentTetromino.name as Sequence];
                 // setCtx({...ctx, fillStyle: gameOver ? 'gray' : colors[currentTetromino.name as Sequence]});
-                for (let row = 0; row < currentTetromino.matrix.length; row++) {
-                    for (let col = 0; col < currentTetromino.matrix[row].length; col++) {
-                        if (currentTetromino.matrix[row][col]) {
-                            context.fillRect(
-                            (currentTetromino.col + col) * cellSize,
-                            (currentTetromino.row + row) * cellSize,
-                            cellSize - 1,
-                            cellSize - 1,
-                            );
+                if (gameOver) {
+
+                } else {
+                    for (let row = 0; row < currentTetromino.matrix.length; row++) {
+                        for (let col = 0; col < currentTetromino.matrix[row].length; col++) {
+                            if (currentTetromino.matrix[row][col]) {
+                                context.fillRect(
+                                (currentTetromino.col + col) * cellSize,
+                                (currentTetromino.row + row) * cellSize,
+                                cellSize - 1,
+                                cellSize - 1,
+                                );
+                            }
                         }
                     }
                 }
@@ -191,7 +196,7 @@ export const Tetris:FC = () => {
             setCtx(context);
             setCtxFigure(contextFigure);
         }
-    }, [ctx, playField, currentTetromino, nextTetromino])
+    }, [ctx, playField, currentTetromino, nextTetromino, gameOver])
 
     timestampRef.current = setTimeout(() => {
         if (isGameStarted && !pause) setTick(!tick)
@@ -200,6 +205,7 @@ export const Tetris:FC = () => {
     const onStartGame = () => {
         setGameStarted(true);
         setPause(false);
+        canvasRef.current.focus();
     }
 
     const onRestartGame = () => {
@@ -217,15 +223,16 @@ export const Tetris:FC = () => {
             lineCount: Math.max(lineCount, bestLineCount), 
             time: newTime.localeCompare(bestTime) > 0 ? newTime : bestTime};
         localStorage.setItem('tetris-score', JSON.stringify(dataToSave));
+        setTime(newTime);
+        if (isGameStarted) setIsFinishModalOpen(true);
         setGameOver(true);
         setGameStarted(false);
         if (pause) setPause(false);
-        setTime(newTime);
-        if (isGameStarted) setIsFinishModalOpen(true);
     }
 
     const onPause = () => {
         setPause(!pause);
+        if (!pause) canvasRef.current.focus();
     }
 
     const onKeyDown = (e: KeyboardEvent) => {
@@ -297,61 +304,66 @@ export const Tetris:FC = () => {
     }
 
     const placeTetromino = () => {
-        let linesAtOnce = 0;
-        const newPlayfield = [...playField];
-        for (let row = 0; row < currentTetromino.matrix.length; row++) {
-            for (let col = 0; col < currentTetromino.matrix[row].length; col++) {
-                if (currentTetromino.matrix[row][col]) {
-                    if (currentTetromino.row + row < 0) {
-                        // onEndGame();
-                        console.log('END???');
-                    }
-                    newPlayfield[currentTetromino.row + row][currentTetromino.col + col] = currentTetromino.name;
-                }
-            }
-        }
-
-        // убираем линию
-        for (let row = playField.length - 1; row >= 0;) {
-            if (playField[row].every(cell => !!cell)) {
-                linesAtOnce++;
-                let lines = lineCount;
-                lines++;
-
-                if (lines >= 10 && lines % 10 === 0) {
-                    setLevel(level + 1);
-                    setSpeed(speed - 50);
-                }
-
-                for (let i = row; i > 0; i--) {
-                    for (let k = 0; k < playField[i].length; k++) {
-                        console.log(i, k);
-                        console.log(newPlayfield[i][k])
-                        console.log(newPlayfield[i - 1][k]);
-                        newPlayfield[i][k] = newPlayfield[i - 1][k];
+        try {
+            let linesAtOnce = 0;
+            const newPlayfield = copyMatrix(playField);
+            let ended = false;
+            for (let row = 0; row < currentTetromino.matrix.length; row++) {
+                for (let col = 0; col < currentTetromino.matrix[row].length; col++) {
+                    if (currentTetromino.matrix[row][col]) {
+                        if (currentTetromino.row + row < 0) {
+                            onEndGame();
+                            ended = true;
+                        }
+                        if (!ended) newPlayfield[currentTetromino.row + row][currentTetromino.col + col] = currentTetromino.name;
                     }
                 }
-                setLineCount(lines);
-            } else {
-                row--;
             }
-        }
 
-        // очки
-        const ratio = lineScore[linesAtOnce] ?? 1200;
-        setScore(score + ratio * (level + 1));
+            // убираем линию
+            let row = playField.length - 1;
+            while (row >= 0) {
+                if (newPlayfield[row].every(cell => !!cell)) {
+                    linesAtOnce++;
+                    let lines = lineCount;
+                    lines++;
 
-        // заканчиваем игру, если вверху есть фигура и упирается в верх
-        for (let i = 0; i < playField[0].length; i++) {
-            if (playField[0][i] !== undefined) {
-                onEndGame();
+                    if (lines >= 10 && lines % 10 === 0) {
+                        setLevel(level + 1);
+                        setSpeed(speed - 50);
+                    }
+
+                    for (let i = row; i > 0; i--) {
+                        for (let k = 0; k < playField[i].length; k++) {
+                            newPlayfield[i][k] = newPlayfield[i - 1][k];
+                        }
+                    }
+                    setLineCount(lines);
+                } else {
+                    row--;
+                }
             }
-        }
 
-        // следующая фигура
-        setCurrentTetromino(nextTetromino);
-        setNextTetromino(getRandomTetromino());
-        setPlayField(newPlayfield);
+            // очки
+            const ratio = lineScore[linesAtOnce] ?? 1200;
+            setScore(score + ratio * (level + 1));
+
+            // заканчиваем игру, если вверху есть фигура и упирается в верх
+            for (let i = 0; i < playField[0].length; i++) {
+                if (playField[0][i] !== undefined) {
+                    onEndGame();
+                    return;
+                }
+            }
+
+            // следующая фигура
+            setCurrentTetromino(nextTetromino);
+            setNextTetromino(getRandomTetromino());
+            setPlayField(newPlayfield);
+        } catch (error) {
+            console.log(error);
+        }
+        
     }
 
 
