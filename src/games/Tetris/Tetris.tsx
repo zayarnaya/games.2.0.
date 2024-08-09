@@ -108,6 +108,7 @@ export const Tetris:FC = () => {
         setPause(defaults.pause)
         setCurrentTetromino(getRandomTetromino());
         setNextTetromino(getRandomTetromino());
+        setTime(defaults.time);
     }
 
     const loop = useCallback(() => {
@@ -207,17 +208,20 @@ export const Tetris:FC = () => {
         onStartGame();
     }
 
+    const getTime = () => timerRef.current.dataset.time;
+
     const onEndGame = () => {
+        const newTime = getTime();
         const dataToSave = {
             score: Math.max(score, bestScore), 
             lineCount: Math.max(lineCount, bestLineCount), 
-            time: time.localeCompare(bestTime) > 0 ? time : bestTime};
+            time: newTime.localeCompare(bestTime) > 0 ? newTime : bestTime};
         localStorage.setItem('tetris-score', JSON.stringify(dataToSave));
         setGameOver(true);
-
-        if (isGameStarted) setIsFinishModalOpen(true);
         setGameStarted(false);
         if (pause) setPause(false);
+        setTime(newTime);
+        if (isGameStarted) setIsFinishModalOpen(true);
     }
 
     const onPause = () => {
@@ -367,7 +371,7 @@ export const Tetris:FC = () => {
                 </canvas>
             </div>
             <RulesLayout>
-                {/* <Timer ref={timerRef} time={time} pause={pause} /> */}
+                <Timer ref={timerRef} time={time} pause={isGameStarted ? pause : true} />
                 <Score>{score}</Score>
                 <div>Уровень {level}</div>
                 <div>Убрали линий {lineCount}</div>
