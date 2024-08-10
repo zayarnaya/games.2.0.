@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getIndexFromRowAndCol, getRowAndCol } from './helpers';
 import rules from './rules.html';
@@ -13,6 +13,7 @@ import { HighScore } from './components/HighScore/HighScore';
 import { Patch } from '../../views/components/Patch/Patch';
 import type { RootState } from '../../store/store';
 import { onNextMove, setWrongMove, removeWrongMove, onUndoMove, restart, onLoadGame, startTimer } from '../../store/slices/KnightSlice';
+import { Modal } from 'src/views/components';
 
 // todo проверить вин и фейл
 export const Knight = () => {
@@ -23,6 +24,9 @@ export const Knight = () => {
 	const [pause, setPause] = useState(false);
 	const [highscore, setHighscore] = useState(+localStorage.getItem('knight-highscore') || 0);
 	const [bestTime, setBestTime] = useState(localStorage.getItem('knight-besttime') || '99:99:99')
+
+	const [isWinModalOpen, setIsWinModalOpen] = useState(false);
+	const [isFailModalOpen, setIsFailModalOpen] = useState(false);
 
 	const dispatch = useDispatch();
 
@@ -64,21 +68,18 @@ export const Knight = () => {
 	};
 
 	const onFail = () => {
-		alert('Вы проиграли!' + 'Ваш счет: ' + (count));
-		// if (count > +highscore) {
-		// 	localStorage.setItem('knight-highscore', (count).toString());
-		// }
+		setIsFailModalOpen(true);
 		saveHighscore();
 	}
 
 	const onWin = () => {
-		// const winTime = timerRef?.current?.dataset?.time || '00:00:00';
-		alert('Вы выиграли! Ваше время ' + timerRef.current.dataset.time);
-		// if (winTime.localeCompare(bestTime) > 0) {
-		// 	localStorage.setItem('knight-besttime', winTime);
-		// }
+		setIsWinModalOpen(true);
 		saveBestTime();
 	}
+
+	const onWinModalClose = useCallback(() => setIsWinModalOpen(false), []);
+	const onFailModalClose = useCallback(() => setIsFailModalOpen(false), []);
+
 
 	const onSave = () => {
 		const data2save = {
@@ -127,6 +128,14 @@ export const Knight = () => {
 
 	return (
 		<GameLayout>
+			{isFailModalOpen && <Modal onClose={onFailModalClose}>
+				Вы проиграли :-(<br />
+				Ваш счет {count}
+				</Modal>}
+			{isWinModalOpen && <Modal onClose={onWinModalClose}>
+				Вы выиграли! <br />
+				Ваше время {timerRef.current.dataset.time}
+				</Modal>}
 			<KnightField>
 				{pause && <Patch game='knight' />}
 				{field.flat().map((item, index) => {
