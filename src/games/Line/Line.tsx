@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { LineItem } from './types';
 import type { RootState } from '../../store/store';
@@ -15,6 +15,7 @@ import { onDeleteChars, onNext, onUndo, onRestart, onLoadGame, startTimer, onVic
 import { Timer } from '../../views/components/Timer/Timer';
 import { Patch } from '../../views/components/Patch/Patch';
 import { Score } from '../../views/components/Score/Score';
+import { Modal } from 'src/views/components';
 
 
 export const Line = () => {
@@ -28,6 +29,9 @@ export const Line = () => {
 	const [history, setHistory] = useState(defaultHistory);
 	const [highscore, setHighscore] = useState(+localStorage.getItem('line-highscore') || 0);
 	const [bestTime, setBestTime] = useState(localStorage.getItem('line-besttime') || '99:99:99');
+
+	const [isWinModalOpen, setIsWinModalOpen] = useState(false);
+	const [isFailModalOpen, setIsFailModalOpen] = useState(false);
 
 	const timerRef = useRef<HTMLDivElement>(null);
 
@@ -57,15 +61,18 @@ export const Line = () => {
 	}
 
 	const onWin = () => {
-		alert('ПОБЕДА');
+		setIsWinModalOpen(true);
 		saveHighscore();
 		saveBestTime();
 	}
 
 	const onFail = () => {
-		alert('Пожалуй, выиграть уже не получится\nВаш счет ' + score);
+		setIsFailModalOpen(true);
 		saveHighscore();
 	}
+
+	const onWinModalClose = useCallback(() => setIsWinModalOpen(false), []);
+	const onFailModalClose = useCallback(() => setIsFailModalOpen(false), []);
 
 
 	const handleClick = (index: number) => {
@@ -97,13 +104,13 @@ export const Line = () => {
 		const submitArr = [...arr];
 		const arr2Copy = submitArr.filter(item => !item.deleted).map(item => item.value);
 		if (!arr2Copy.length) {
-			alert('Ура, победа!');
 			dispatch(onVictory());
 			return;
 		}
 		for (let num of arr2Copy) {
 			submitArr.push({ ...defaultItem, value: num });
 		}
+
 		dispatch(onNext(submitArr))
 	};
 
@@ -152,6 +159,14 @@ export const Line = () => {
 
 	return (
 		<GameLayout>
+			{isFailModalOpen && <Modal onClose={onFailModalClose}>
+			Пожалуй, выиграть уже не получится<br />
+			Ваш счет {score}
+				</Modal>}
+			{isWinModalOpen && <Modal onClose={onWinModalClose}>
+				Ура, победа!<br />
+				Ваш счет {score}
+				</Modal>}
 			<LineLayout>
 				<LineField>
 					{pause && <Patch game='line' /> }
