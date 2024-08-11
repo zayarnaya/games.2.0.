@@ -24,10 +24,10 @@ const App = () => {
 						<Sidebar links={menuLinks} />
 						<Suspense fallback={<Spinner />}>
 							<Routes>
-								{/* <Route path='/' element={<Line />} />
+								<Route path='/' element={<Line />} />
 								<Route path='/knight' element={<Knight />} />
-								<Route path='/tetris' element = {<Tetris />} /> */}
-								<Route path='/' element={<Tetris />} />
+								<Route path='/tetris' element = {<Tetris />} />
+								{/* <Route path='/' element={<Tetris />} /> */}
 							</Routes>
 						</Suspense>
 					</MainContentWrapper>
