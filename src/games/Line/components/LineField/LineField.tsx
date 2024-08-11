@@ -11,7 +11,7 @@ type Props = {
 export const LineField:FC<Props> = (props: Props) => {
     const { children, className, ...rest } = props;
     return (
-        <div className={classNames(className, styles['line-field'])}>{children}</div>
+        <div className={classNames(className, styles['line-field'])} {...rest}>{children}</div>
     );
 }
 

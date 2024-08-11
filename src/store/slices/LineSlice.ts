@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+// @ts-ignore
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { LineHistoryItem, LineItem } from '../../games/Line/types';
 import { getDefaultArray } from '../../games/Line/helpers';
@@ -62,12 +63,14 @@ export const lineSlice = createSlice({
     },
     onRestart: (state) => {
         for (let key in initialState) {
-            state[key] = initialState[key];
+            // @ts-ignore
+            state[key] = initialState[key as keyof LineState];
         }
     },
     onLoadGame: (state, action) => {
         for (let key in state) {
-            state[key] = action.payload[key] || initialState[key];
+            // @ts-ignore
+            state[key] = action.payload[key] || initialState[key as keyof LineState];
         }
     },
     startTimer: (state) => {

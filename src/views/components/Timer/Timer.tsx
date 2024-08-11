@@ -1,4 +1,4 @@
-import React, { FC, forwardRef, LegacyRef, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import React, { forwardRef, LegacyRef, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 
 import styles from './Timer.module.scss';
