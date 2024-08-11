@@ -13,7 +13,7 @@ import { HighScore } from './components/HighScore/HighScore';
 import { Patch } from '../../views/components/Patch/Patch';
 import type { RootState } from '../../store/store';
 import { onNextMove, setWrongMove, removeWrongMove, onUndoMove, restart, onLoadGame, startTimer } from '../../store/slices/KnightSlice';
-import { Modal } from 'src/views/components';
+import { Modal } from '../../views/components';
 
 // todo проверить вин и фейл
 export const Knight = () => {
