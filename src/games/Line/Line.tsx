@@ -11,7 +11,7 @@ import { LineButton } from './components/LineButton/LineButton';
 import { LineField } from './components/LineField/LineField';
 import { LineLayout } from './layouts/LineLayout/LineLayout';
 import { RulesLayout } from '../../views/layouts/RulesLayout/RulesLayout';
-import { onDeleteChars, onNext, onUndo, onRestart, onLoadGame, startTimer, onVictory } from '../../store/slices/LineSlice';
+import { onDeleteChars, onNext, onUndo, onRestart, onLoadGame, startTimer, onVictory, onContinue } from '../../store/slices/LineSlice';
 import { Timer } from '../../views/components/Timer/Timer';
 import { Patch } from '../../views/components/Patch/Patch';
 import { Score } from '../../views/components/Score/Score';
@@ -22,7 +22,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 export const Line = () => {
 	// const { arr: defaultArray, history: defaultHistory, timer, score, win, fail } = useSelector((state: RootState) => state.line);
 	// const dispatch = useDispatch();
-	const { arr: defaultArray, history: defaultHistory, timer, score, win, fail } = useAppSelector((state: RootState) => state.line);
+	const { arr: defaultArray, history: defaultHistory, timer, score, win, fail, continued } = useAppSelector((state: RootState) => state.line);
 	const dispatch = useAppDispatch();
 
 	const [hasGameStarted, setHasGameStarted] = useState(false);
@@ -35,6 +35,7 @@ export const Line = () => {
 
 	const [isWinModalOpen, setIsWinModalOpen] = useState(false);
 	const [isFailModalOpen, setIsFailModalOpen] = useState(false);
+	const [isEndModalOpen, setIsEndModalOpen] = useState(false);
 
 	const timerRef = useRef<HTMLDivElement>(null);
 
@@ -48,7 +49,7 @@ export const Line = () => {
 	}, [win]);
 
 	useEffect(() => {
-		if (fail) onFail();
+		if (fail && !continued) onFail();
 	})
 
 	const saveHighscore = () => {
@@ -74,8 +75,24 @@ export const Line = () => {
 		saveHighscore();
 	}
 
+	const onEndGame = useCallback(() => {
+		setIsEndModalOpen(true);
+		saveHighscore();
+	}, [])
+
 	const onWinModalClose = useCallback(() => setIsWinModalOpen(false), []);
-	const onFailModalClose = useCallback(() => setIsFailModalOpen(false), []);
+	const onFailModalClose = useCallback(() => {
+		setIsFailModalOpen(false);
+		dispatch(onContinue());
+	}, []);
+	const onFailAndRestart = useCallback(() => {
+		setIsFailModalOpen(false);
+		dispatch(onRestart());
+	}, []);
+	const onEndGameModalClose = useCallback(() => {
+		setIsEndModalOpen(false);
+		dispatch(onRestart());
+	}, []);
 
 
 	const handleClick = (index: number) => {
@@ -164,7 +181,13 @@ export const Line = () => {
 		<GameLayout>
 			{isFailModalOpen && <Modal onClose={onFailModalClose}>
 			Пожалуй, выиграть уже не получится<br />
-			Ваш счет {score}
+			Ваш счет {score}<br />
+			<Button size='sm' onClick={onFailModalClose}>Продолжить</Button>
+			<Button size='sm' onClick={onFailAndRestart}>Новая игра</Button>
+				</Modal>}
+			{isEndModalOpen && <Modal onClose={onEndGameModalClose}>
+				Вы завершили игру!<br />
+				Ваш счет {score}<br />
 				</Modal>}
 			{isWinModalOpen && <Modal onClose={onWinModalClose}>
 				Ура, победа!<br />
@@ -200,6 +223,9 @@ export const Line = () => {
 						</Button>
 						<Button size={'md'} onClick={onLoad}>
 							Загрузить
+						</Button>
+						<Button size={'md'} onClick={onEndGame}>
+							Закончить игру
 						</Button>
 						<Button size='md' disabled={!hasGameStarted} onClick={onPause}>{pause ? 'Вернуться к игре' : 'Пауза'}</Button>
 					</div>

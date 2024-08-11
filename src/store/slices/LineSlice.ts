@@ -12,6 +12,7 @@ export interface LineState {
     timer: string;
     win: boolean;
     fail: boolean;
+    continued: boolean;
 }
 
 const startArray = getDefaultArray();
@@ -23,6 +24,7 @@ const initialState: LineState = {
     timer: '',
     win: false,
     fail: false,
+    continued: false,
 }
 
 export const lineSlice = createSlice({
@@ -67,6 +69,9 @@ export const lineSlice = createSlice({
             state[key] = initialState[key as keyof LineState];
         }
     },
+    onContinue: (state) => {
+        state.continued = true;
+    },
     onLoadGame: (state, action) => {
         for (let key in state) {
             // @ts-ignore
@@ -86,6 +91,6 @@ export const lineSlice = createSlice({
   },
 })
 
-export const { onVictory, onDeleteChars, onNext, onUndo, onRestart, onLoadGame, startTimer, resetTimer } = lineSlice.actions;
+export const { onContinue, onVictory, onDeleteChars, onNext, onUndo, onRestart, onLoadGame, startTimer, resetTimer } = lineSlice.actions;
 
 export default lineSlice.reducer;
