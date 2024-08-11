@@ -5,6 +5,6 @@ export type LineItem = {
 };
 
 export type LineHistoryItem = {
-	idx: [number, number] | [];
+	idx: [number, number] | number[];
 	length: number;
 }

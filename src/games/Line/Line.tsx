@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+// import { useSelector, useDispatch } from 'react-redux';
 import type { LineItem } from './types';
 import type { RootState } from '../../store/store';
 import { checkHorizontal, checkVertical } from './helpers';
@@ -15,12 +15,15 @@ import { onDeleteChars, onNext, onUndo, onRestart, onLoadGame, startTimer, onVic
 import { Timer } from '../../views/components/Timer/Timer';
 import { Patch } from '../../views/components/Patch/Patch';
 import { Score } from '../../views/components/Score/Score';
-import { Modal } from 'src/views/components';
+import { Modal } from '../../views/components';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 
 export const Line = () => {
-	const { arr: defaultArray, history: defaultHistory, timer, score, win, fail } = useSelector((state: RootState) => state.line);
-	const dispatch = useDispatch();
+	// const { arr: defaultArray, history: defaultHistory, timer, score, win, fail } = useSelector((state: RootState) => state.line);
+	// const dispatch = useDispatch();
+	const { arr: defaultArray, history: defaultHistory, timer, score, win, fail } = useAppSelector((state: RootState) => state.line);
+	const dispatch = useAppDispatch();
 
 	const [hasGameStarted, setHasGameStarted] = useState(false);
 	const [pause, setPause] = useState(false);
@@ -171,12 +174,12 @@ export const Line = () => {
 				<LineField>
 					{pause && <Patch game='line' /> }
 					{arr.map((item, index) => (
-						<LineButton disabled={item.deleted} active={item.active} onClick={() => handleClick(index)}>
+						<LineButton key={'line_button' + index} disabled={item.deleted} active={item.active} onClick={() => handleClick(index)}>
 							{item.value}
 						</LineButton>
 					))}
 				</LineField>
-				<Button size={'sm'} onClick={onSubmit} floatRight={true}>Дальше</Button>
+				<Button data-testid='submit_button' size={'sm'} onClick={onSubmit} floatRight={true}>Дальше</Button>
 			</LineLayout>
 			<RulesLayout>
 				<Timer ref={timerRef} time={timer} pause={pause} />
@@ -202,6 +205,7 @@ export const Line = () => {
 					</div>
 				</div>
 				<div dangerouslySetInnerHTML={{ __html: rules }} />
+				{/* <div /> */}
 			</RulesLayout>
 		</GameLayout>
 	);
