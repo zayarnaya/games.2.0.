@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
+import React, { FC, SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 
 import styles from './Tetris.module.scss';
@@ -153,21 +153,21 @@ export const Tetris:FC = () => {
         if (isGameStarted && !pause) setTick(!tick)
     }, speed);
 
-    const onStartGame = () => {
+    const onStartGame = useCallback(() => {
         setGameStarted(true);
         setPause(false);
         canvasRef.current.focus();
-    }
+    }, [isGameStarted, pause, canvasRef]);
 
-    const onRestartGame = () => {
+    const onRestartGame = useCallback(() => {
         setGameOver(false);
         setDefaults();
         onStartGame();
-    }
+    }, [gameOver]);
 
     const getTime = () => timerRef.current.dataset.time;
 
-    const onEndGame = () => {
+    const onEndGame = useCallback(() => {
         const newTime = getTime();
         const dataToSave = {
             score: Math.max(score, bestScore), 
@@ -180,12 +180,12 @@ export const Tetris:FC = () => {
         setGameStarted(false);
         if (pause) setPause(false);
         colorField(ctx, playField, 'lightgray');
-    }
+    }, [time, isGameStarted, gameOver, pause, ctx]);
 
-    const onPause = () => {
+    const onPause = useCallback(() => {
         setPause(!pause);
         if (!pause) canvasRef.current.focus();
-    }
+    }, [pause, canvasRef]);
 
     const onKeyDown = (e: KeyboardEvent) => {
         switch (e.code) {
@@ -331,7 +331,7 @@ export const Tetris:FC = () => {
 
                 {pause && <Patch game='tetris' /> }
 
-                <canvas ref={canvasRef} id="canvas" width={cellSize * width} height={cellSize * height}>
+                <canvas ref={canvasRef} id="canvas" width={cellSize * width} height={cellSize * height} tabIndex={0}>
                 </canvas>
             </div>
             <RulesLayout>
