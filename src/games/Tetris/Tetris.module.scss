@@ -1,10 +1,14 @@
 .field-tetris {
     position: relative;
+    height: 602px;
     border: 1px solid gray;
 }
 
 .next-figure {
-    // width: 100px;
-    // height: 100px;
-    border: 1px solid red;
+    &__container {
+        padding: 10px;
+    }
+    &__canvas {
+        border: 1px solid red;
+    }
 }

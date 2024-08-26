@@ -14,7 +14,7 @@ const getRandomTetrominoName = () => {
 
 const getNextTetromino = (name: Sequence) => {
     const matrix = tetrominos[name];
-    const col = 4;
+    const col = 3;
     const row = name === 'I' ? -2 : -1;
 
     return {name, matrix, row, col};
@@ -47,7 +47,7 @@ export const isValidMove = (tetromino: tetromino, playfield: Playfield) => {
                 col + k < 0 ||
                 col + k >= playfield[0].length ||
                 row + i >= playfield.length ||
-                playfield[row + i][col + k]
+                (playfield[row + i] && playfield[row + i][col + k])
             )) {
                 return false;
             }

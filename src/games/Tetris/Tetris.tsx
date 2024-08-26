@@ -84,11 +84,11 @@ export const Tetris:FC = () => {
 
     const drawField = () => {
         ctx.beginPath();
-        for (let i = 0; i < width; i++) {
+        for (let i = 0; i <= width; i++) {
             ctx.moveTo(cellSize * i, 0);
             ctx.lineTo(cellSize * i, cellSize * height);
         }
-        for (let k = 0; k < height; k++) {
+        for (let k = 0; k <= height; k++) {
             ctx.moveTo(0, cellSize * k);
             ctx.lineTo(cellSize * width, cellSize * k);
         }
@@ -131,7 +131,7 @@ export const Tetris:FC = () => {
                         filled++;
                         const name = playField[row][col];
                         context.fillStyle = name ? colors[name as Sequence] : 'white';
-                        context.fillRect(col * cellSize, row * cellSize, cellSize - 1, cellSize - 1);
+                        context.fillRect(col * cellSize + 1, row * cellSize + 1, cellSize - 2, cellSize - 2);
                     }
                 }
                 if (filled) {
@@ -146,12 +146,11 @@ export const Tetris:FC = () => {
                     for (let k = 0; k < nextTetromino.matrix[i].length; k++) {
                         let margin = 1.5;
                         if (nextTetromino.name === 'I') margin = 1;
-                        if (nextTetromino.name === 'O') margin = 2;
                        
                         contextFigure.fillStyle = colors[nextTetromino.name as Sequence];
                         if (nextTetromino.matrix[i][k]) {
                             contextFigure.fillRect(
-                                (k + margin) * (cellSize),
+                                (k + (nextTetromino.name === 'O' ? 2 : margin)) * (cellSize),
                                 (i + margin) * (cellSize),
                                 cellSize - 1,
                                 cellSize - 1,
@@ -176,23 +175,19 @@ export const Tetris:FC = () => {
 
                 context.fillStyle = gameOver ? 'lightgray' : colors[currentTetromino.name as Sequence];
                 // setCtx({...ctx, fillStyle: gameOver ? 'gray' : colors[currentTetromino.name as Sequence]});
-                if (gameOver) {
-
-                } else {
-                    for (let row = 0; row < currentTetromino.matrix.length; row++) {
-                        for (let col = 0; col < currentTetromino.matrix[row].length; col++) {
-                            if (currentTetromino.matrix[row][col]) {
-                                context.fillRect(
-                                (currentTetromino.col + col) * cellSize,
-                                (currentTetromino.row + row) * cellSize,
-                                cellSize - 1,
-                                cellSize - 1,
-                                );
-                            }
+                for (let row = 0; row < currentTetromino.matrix.length; row++) {
+                    for (let col = 0; col < currentTetromino.matrix[row].length; col++) {
+                        if (currentTetromino.matrix[row][col]) {
+                            context.fillRect(
+                            (currentTetromino.col + col) * cellSize + 1,
+                            (currentTetromino.row + row) * cellSize + 1,
+                            cellSize - 2,
+                            cellSize - 2,
+                            );
                         }
                     }
                 }
-            }
+                }
             setCtx(context);
             setCtxFigure(contextFigure);
         }
@@ -228,6 +223,20 @@ export const Tetris:FC = () => {
         setGameOver(true);
         setGameStarted(false);
         if (pause) setPause(false);
+        let upperRow = 0;
+        for (let row = 0; row < height; row++) {
+            let filled = 0;
+            for (let col = 0; col < width; col++) {
+                if (playField[row][col]) {
+                    filled++;
+                    ctx.fillStyle = 'lightgray';
+                    ctx.fillRect(col * cellSize + 1, row * cellSize + 1, cellSize - 2, cellSize - 2);
+                }
+            }
+            if (filled) {
+                upperRow++;
+            }
+        }
     }
 
     const onPause = () => {
@@ -312,7 +321,7 @@ export const Tetris:FC = () => {
                 for (let col = 0; col < currentTetromino.matrix[row].length; col++) {
                     if (currentTetromino.matrix[row][col]) {
                         if (currentTetromino.row + row < 0) {
-                            onEndGame();
+                            onEndGame(); // куда-то сюда вставить перекрас
                             ended = true;
                         }
                         if (!ended) newPlayfield[currentTetromino.row + row][currentTetromino.col + col] = currentTetromino.name;
@@ -392,8 +401,10 @@ export const Tetris:FC = () => {
                 <div>Самая долгая игра: {bestTime}</div>
                 <div>
                     <h3>Игровое меню</h3>
-                    <p>следующая фигура</p>
-                    <canvas className={styles['next-figure']} ref={canvasRefFigure} id="canvas-figure" width={figWidth * cellSize} height={figHeight * cellSize}></canvas>
+                    <div className={styles['next-figure__container']}>
+                        <p>следующая фигура</p>
+                        <canvas className={styles['next-figure__canvas']} ref={canvasRefFigure} id="canvas-figure" width={figWidth * cellSize} height={figHeight * cellSize}></canvas>
+                    </div>
                     <div>
                         <Button onClick={onRestartGame} size={'md'}>{isGameStarted ? "Играть заново" : "Начать игру"}</Button>
                         <Button size={'md'} disabled={!isGameStarted} onClick={onEndGame}>
