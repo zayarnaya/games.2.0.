@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 import styles from './Tetris.module.scss';
 import { colors, defaults, dimensions, lineScore } from './consts';
-import { getDefaultPlayfield, getRandomTetromino, isValidMove, rotate } from './helpers';
+import { colorField, colorTetromino, drawField, getDefaultPlayfield, getRandomTetromino, isValidMove, rotate } from './helpers';
 import { Playfield, Sequence } from './types';
 import { GameLayout } from '../../views/layouts/GameLayout/GameLayout';
 import { RulesLayout } from '../../views/layouts/RulesLayout/RulesLayout';
@@ -81,23 +81,6 @@ export const Tetris:FC = () => {
         if ((isGameStarted || gameOver) && !pause) requestAnimationFrame(loop);
     }, [tick, currentTetromino, nextTetromino])
 
-
-    const drawField = () => {
-        ctx.beginPath();
-        for (let i = 0; i <= width; i++) {
-            ctx.moveTo(cellSize * i, 0);
-            ctx.lineTo(cellSize * i, cellSize * height);
-        }
-        for (let k = 0; k <= height; k++) {
-            ctx.moveTo(0, cellSize * k);
-            ctx.lineTo(cellSize * width, cellSize * k);
-        }
-
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.stroke();
-    }
-
     const setDefaults = () => {
         setPlayField(getDefaultPlayfield());
         setScore(defaults.score);
@@ -121,23 +104,8 @@ export const Tetris:FC = () => {
             const context = ctx;
             const contextFigure = ctxFigure;
             context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-            drawField();
-
-            let upperRow = 0;
-            for (let row = 0; row < height; row++) {
-                let filled = 0;
-                for (let col = 0; col < width; col++) {
-                    if (playField[row][col]) {
-                        filled++;
-                        const name = playField[row][col];
-                        context.fillStyle = name ? colors[name as Sequence] : 'white';
-                        context.fillRect(col * cellSize + 1, row * cellSize + 1, cellSize - 2, cellSize - 2);
-                    }
-                }
-                if (filled) {
-                    upperRow++;
-                }
-            }
+            drawField(context);
+            colorField(context, playField);
 
             // следующая фигура
             if (nextTetromino) {
@@ -173,20 +141,8 @@ export const Tetris:FC = () => {
 
                 // закрашиваем
 
-                context.fillStyle = gameOver ? 'lightgray' : colors[currentTetromino.name as Sequence];
-                // setCtx({...ctx, fillStyle: gameOver ? 'gray' : colors[currentTetromino.name as Sequence]});
-                for (let row = 0; row < currentTetromino.matrix.length; row++) {
-                    for (let col = 0; col < currentTetromino.matrix[row].length; col++) {
-                        if (currentTetromino.matrix[row][col]) {
-                            context.fillRect(
-                            (currentTetromino.col + col) * cellSize + 1,
-                            (currentTetromino.row + row) * cellSize + 1,
-                            cellSize - 2,
-                            cellSize - 2,
-                            );
-                        }
-                    }
-                }
+                colorTetromino(context, currentTetromino, (gameOver ? 'lightgray' : colors[currentTetromino.name as Sequence]));
+
                 }
             setCtx(context);
             setCtxFigure(contextFigure);
@@ -223,20 +179,7 @@ export const Tetris:FC = () => {
         setGameOver(true);
         setGameStarted(false);
         if (pause) setPause(false);
-        let upperRow = 0;
-        for (let row = 0; row < height; row++) {
-            let filled = 0;
-            for (let col = 0; col < width; col++) {
-                if (playField[row][col]) {
-                    filled++;
-                    ctx.fillStyle = 'lightgray';
-                    ctx.fillRect(col * cellSize + 1, row * cellSize + 1, cellSize - 2, cellSize - 2);
-                }
-            }
-            if (filled) {
-                upperRow++;
-            }
-        }
+        colorField(ctx, playField, 'lightgray');
     }
 
     const onPause = () => {
