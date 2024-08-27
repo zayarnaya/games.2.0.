@@ -2,17 +2,18 @@ import React, { forwardRef, LegacyRef, useEffect, useRef, useState } from 'react
 import classNames from 'classnames';
 
 import styles from './Timer.module.scss';
-import { parseTime } from './helpers';
+import { makeTimeString, parseTime } from './helpers';
 import { useInterval } from '../../../hooks';
 
 type Props = {
     className?: string,
     time?: string,
     pause?: boolean,
+    callback: (time: string) => void,
 };
 
 export const Timer = forwardRef<HTMLDivElement, Props>((props: Props, ref: LegacyRef<HTMLDivElement>) => {
-    const { className, time, pause } = props;
+    const { className, time, pause, callback } = props;
     const [hour, setHour] = useState(0);
     const [min, setMin] = useState(0);
     const [sec, setSec] = useState(0);
@@ -29,6 +30,7 @@ export const Timer = forwardRef<HTMLDivElement, Props>((props: Props, ref: Legac
                 setMin(0);
                 setHour(hour + 1);
             }
+            callback && callback(makeTimeString(hour, min, sec));
         }
 
     }
@@ -51,6 +53,6 @@ export const Timer = forwardRef<HTMLDivElement, Props>((props: Props, ref: Legac
 
     // с форматированием бы разобраться бы
     return (
-        <div data-time={`${hour < 10 ? '0' : ''}${hour}:${min < 10 ? '0' : ''}${min}:${sec < 10 ? '0' : ''}${sec}`} ref={ref} className={classNames(className, styles.timer)}>{hour < 10 && '0'}{hour}:{min < 10 && '0'}{min}:{sec < 10 && '0'}{sec}</div>
+        <div data-time={makeTimeString(hour, min, sec)} ref={ref} className={classNames(className, styles.timer)}>{hour < 10 && '0'}{hour}:{min < 10 && '0'}{min}:{sec < 10 && '0'}{sec}</div>
     );
 })

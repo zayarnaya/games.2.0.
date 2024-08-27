@@ -12,6 +12,7 @@ export interface LineState {
     timer: string;
     win: boolean;
     fail: boolean;
+    started: boolean;
     continued: boolean;
 }
 
@@ -24,6 +25,7 @@ const initialState: LineState = {
     timer: '',
     win: false,
     fail: false,
+    started: false,
     continued: false,
 }
 
@@ -63,10 +65,14 @@ export const lineSlice = createSlice({
         state.arr = arr;
         state.score = Math.max(state.score + lineScoring.undo, 0);
     },
+    onStartGame: (state) => {
+        state.started = true;
+    },
     onRestart: (state) => {
         for (let key in initialState) {
             // @ts-ignore
             state[key] = initialState[key as keyof LineState];
+            state.started = true;
         }
     },
     onContinue: (state) => {
@@ -76,6 +82,7 @@ export const lineSlice = createSlice({
         for (let key in state) {
             // @ts-ignore
             state[key] = action.payload[key] || initialState[key as keyof LineState];
+            state.started = true;
         }
     },
     startTimer: (state) => {
@@ -84,13 +91,17 @@ export const lineSlice = createSlice({
     resetTimer: (state) => {
         state.timer = initialState.timer;
     },
+    saveTimer: (state, action) => {
+        action.payload !== '00:00:00' && (state.timer = action.payload);
+    },
     onVictory: (state) => {
         state.win = true;
         state.score += lineScoring.win;
+        state.started = false;
     },
   },
 })
 
-export const { onContinue, onVictory, onDeleteChars, onNext, onUndo, onRestart, onLoadGame, startTimer, resetTimer } = lineSlice.actions;
+export const { onStartGame, saveTimer, onContinue, onVictory, onDeleteChars, onNext, onUndo, onRestart, onLoadGame, startTimer, resetTimer } = lineSlice.actions;
 
 export default lineSlice.reducer;

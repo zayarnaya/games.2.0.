@@ -11,3 +11,5 @@ export const parseTime = (time: string) => {
     const arr = time.split(':').map(el => Number(el));
     return arr;
 }
+
+export const makeTimeString = (hour: number, min: number, sec: number) => `${hour < 10 ? '0' : ''}${hour}:${min < 10 ? '0' : ''}${min}:${sec < 10 ? '0' : ''}${sec}`

@@ -10,7 +10,7 @@ import { LineButton } from './components/LineButton/LineButton';
 import { LineField } from './components/LineField/LineField';
 import { LineLayout } from './layouts/LineLayout/LineLayout';
 import { RulesLayout } from '../../views/layouts/RulesLayout/RulesLayout';
-import { onDeleteChars, onNext, onUndo, onRestart, onLoadGame, startTimer, onVictory, onContinue } from '../../store/slices/LineSlice';
+import { onStartGame, onDeleteChars, onNext, onUndo, onRestart, onLoadGame, startTimer, onVictory, onContinue, saveTimer } from '../../store/slices/LineSlice';
 import { Timer } from '../../views/components/Timer/Timer';
 import { Patch } from '../../views/components/Patch/Patch';
 import { Score } from '../../views/components/Score/Score';
@@ -19,10 +19,9 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 
 export const Line = () => {
-	const { arr: defaultArray, history: defaultHistory, timer, score, win, fail, continued } = useAppSelector((state: RootState) => state.line);
+	const { arr: defaultArray, history: defaultHistory, timer, score, win, fail, continued, started: hasGameStarted } = useAppSelector((state: RootState) => state.line);
 	const dispatch = useAppDispatch();
 
-	const [hasGameStarted, setHasGameStarted] = useState(false);
 	const [pause, setPause] = useState(false);
 	const [coords, setCoords] = useState(-1);
 	const [arr, setArr] = useState<LineItem[]>(defaultArray);
@@ -34,7 +33,13 @@ export const Line = () => {
 	const [isFailModalOpen, setIsFailModalOpen] = useState(false);
 	const [isEndModalOpen, setIsEndModalOpen] = useState(false);
 
+	const [time, setTime] = useState<string>(timer);
+
 	const timerRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		dispatch(saveTimer(getTime()));
+	}, [time]);
 
 	useEffect(() => {
 		setArr(defaultArray);
@@ -48,21 +53,6 @@ export const Line = () => {
 	useEffect(() => {
 		if (fail && !continued) onFail();
 	}, [fail, continued]);
-
-	// useEffect(() => {
-	// 	return () => {
-	// 		console.log('TIME', getTime());
-	// 		const newTime = getTime();
-	// 		if (newTime && newTime != '00:00:00') dispatch(saveTimer(getTime()));
-	// 	}
-	// });
-
-	useEffect(() => {
-		console.log('MOUNT');
-		return () => {
-			console.log('UNMOUNT');
-		}
-	})
 
 	const saveHighscore = () => {
 		localStorage.setItem('line-highscore', (Math.max(highscore, score)).toString())
@@ -109,7 +99,7 @@ export const Line = () => {
 
 	const handleClick = (index: number) => {
 		if (!hasGameStarted) {
-			setHasGameStarted(true);
+			dispatch(onStartGame());
 			dispatch(startTimer());
 		}
 		if (coords === -1) {
@@ -149,7 +139,6 @@ export const Line = () => {
 	const onStart = () => {
 		saveHighscore();
 		dispatch(onRestart());
-		setHasGameStarted(false);
 	};
 
 	const onUndoMove = () => {
@@ -174,7 +163,7 @@ export const Line = () => {
 		if (typeof state2loadRaw != 'undefined') {
 			const state2load = JSON.parse(state2loadRaw);
 			dispatch(onLoadGame(state2load));
-			setHasGameStarted(true);
+
 		}
 	};
 
@@ -217,7 +206,7 @@ export const Line = () => {
 				<Button data-testid='submit_button' size={'sm'} onClick={onSubmit} floatRight={true}>Дальше</Button>
 			</LineLayout>
 			<RulesLayout>
-				<Timer ref={timerRef} time={timer} pause={pause || !hasGameStarted} />
+				<Timer callback={(time: string) => setTime(time)} ref={timerRef} time={timer} pause={pause || !hasGameStarted} />
 				<Score>{score}</Score>
 				<div>Рекорд: {highscore}</div>
 				<div>Лучшее время: {bestTime}</div>
