@@ -10,7 +10,7 @@ module.exports = {
 		index: path.resolve(__dirname, './../../../src/index.js'),
 	},
 	output: {
-		filename: '[name].[hash].js',
+		filename: '[name].[fullhash].js',
 		path: path.resolve(__dirname, './../../../build'),
 		clean: true,
 		assetModuleFilename: path.join('assets', '[name].[contenthash][ext]'),
