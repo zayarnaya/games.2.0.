@@ -178,6 +178,8 @@ export const Line = () => {
 		return null;
 	}
 
+	const handleTimerChange = useCallback((time: string) => setTime(time), [time]);
+
 	return (
 		<GameLayout>
 			{isFailModalOpen && <Modal onClose={onFailModalClose}>
@@ -206,7 +208,7 @@ export const Line = () => {
 				<Button data-testid='submit_button' size={'sm'} onClick={onSubmit} floatRight={true}>Дальше</Button>
 			</LineLayout>
 			<RulesLayout>
-				<Timer callback={(time: string) => setTime(time)} ref={timerRef} time={timer} pause={pause || !hasGameStarted} />
+				<Timer callback={handleTimerChange} ref={timerRef} time={timer} pause={pause || !hasGameStarted} />
 				<Score>{score}</Score>
 				<div>Рекорд: {highscore}</div>
 				<div>Лучшее время: {bestTime}</div>

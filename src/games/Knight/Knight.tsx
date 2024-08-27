@@ -12,13 +12,13 @@ import { Score } from '../../views/components/Score/Score';
 import { HighScore } from './components/HighScore/HighScore';
 import { Patch } from '../../views/components/Patch/Patch';
 import type { RootState } from '../../store/store';
-import { onNextMove, setWrongMove, removeWrongMove, onUndoMove, restart, onLoadGame, startTimer } from '../../store/slices/KnightSlice';
+import { onStartGame, saveTimer, onNextMove, setWrongMove, removeWrongMove, onUndoMove, restart, onLoadGame, startTimer } from '../../store/slices/KnightSlice';
 import { Modal } from '../../views/components';
 
 // todo проверить вин и фейл
 export const Knight = () => {
-	const { count, field, history, win, fail, time} = useSelector((state: RootState) => state.knight);
-	const [coords, setCoords] = useState([]);
+	const { count, field, history, lastCoords, win, fail, time, started: hasGameStarted} = useSelector((state: RootState) => state.knight);
+	const [coords, setCoords] = useState(lastCoords);
 	const [needHint, setNeedHint] = useState(false);
 	const timerRef = useRef<HTMLDivElement>(null);
 	const [pause, setPause] = useState(false);
@@ -28,6 +28,8 @@ export const Knight = () => {
 	const [isWinModalOpen, setIsWinModalOpen] = useState(false);
 	const [isFailModalOpen, setIsFailModalOpen] = useState(false);
 
+	const [timer, setTimer] = useState<string>(time);
+
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -36,6 +38,9 @@ export const Knight = () => {
 	useEffect(() => {
 		if (fail) onFail();
 	}, [fail]);
+	useEffect(() => {
+		dispatch(saveTimer(getTime()));
+	}, [timer]);
 
 	const saveHighscore = () => {
 		localStorage.setItem('knight-highscore', (Math.max(highscore, count)).toString())
@@ -49,8 +54,12 @@ export const Knight = () => {
 		setBestTime(best);
 	}
 
+	const handleTimerChange = useCallback((time: string) => setTimer(time), [timer]);
+
+
 	const handleClick = (index: number) => {
 		if (!coords.length) {
+			dispatch(onStartGame());
 			dispatch(startTimer());
 		}
 		const { row, col } = getRowAndCol(index);
@@ -154,7 +163,7 @@ export const Knight = () => {
 				})}
 			</KnightField>
 			<RulesLayout>
-				<Timer ref={timerRef} time={time} pause={pause}/>
+				<Timer callback={handleTimerChange} ref={timerRef} time={time} pause={pause || !hasGameStarted}/>
 				<Score>{count}</Score>
 				<div>Рекорд: {highscore}</div>
 				<div>Лучшее время: {bestTime}</div>
@@ -169,7 +178,7 @@ export const Knight = () => {
 							Отменить ход
 						</Button>
 						<Button size={'md'} onClick={onDeleteHighscore}>Сбросить рекорд</Button>
-						<Button size='md' disabled={coords.length === 0} onClick={onPauseClick}>{pause ? 'Вернуться к игре' : 'Пауза'}</Button>
+						<Button size='md'  disabled={!hasGameStarted} onClick={onPauseClick}>{pause ? 'Вернуться к игре' : 'Пауза'}</Button>
 					</div>
 				</div>
 				<div dangerouslySetInnerHTML={{ __html: rules }} />

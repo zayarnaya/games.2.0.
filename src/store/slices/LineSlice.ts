@@ -70,8 +70,8 @@ export const lineSlice = createSlice({
     },
     onRestart: (state) => {
         for (let key in initialState) {
-            // @ts-ignore
-            state[key] = initialState[key as keyof LineState];
+            Object.assign(state, {[key]: initialState[key as keyof LineState]})
+            // state[key] = initialState[key as keyof LineState];
             state.started = true;
         }
     },
@@ -80,8 +80,8 @@ export const lineSlice = createSlice({
     },
     onLoadGame: (state, action) => {
         for (let key in state) {
-            // @ts-ignore
-            state[key] = action.payload[key] || initialState[key as keyof LineState];
+            Object.assign(state, {[key]: action.payload[key] || initialState[key as keyof LineState]})
+            // state[key] = action.payload[key] || initialState[key as keyof LineState];
             state.started = true;
         }
     },
