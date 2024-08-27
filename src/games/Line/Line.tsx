@@ -10,7 +10,7 @@ import { LineButton } from './components/LineButton/LineButton';
 import { LineField } from './components/LineField/LineField';
 import { LineLayout } from './layouts/LineLayout/LineLayout';
 import { RulesLayout } from '../../views/layouts/RulesLayout/RulesLayout';
-import { onDeleteChars, onNext, onUndo, onRestart, onLoadGame, startTimer, onVictory, onContinue, saveTimer } from '../../store/slices/LineSlice';
+import { onDeleteChars, onNext, onUndo, onRestart, onLoadGame, startTimer, onVictory, onContinue } from '../../store/slices/LineSlice';
 import { Timer } from '../../views/components/Timer/Timer';
 import { Patch } from '../../views/components/Patch/Patch';
 import { Score } from '../../views/components/Score/Score';
@@ -49,13 +49,13 @@ export const Line = () => {
 		if (fail && !continued) onFail();
 	}, [fail, continued]);
 
-	useEffect(() => {
-		return () => {
-			console.log('TIME', getTime());
-			const newTime = getTime();
-			if (newTime && newTime != '00:00:00') dispatch(saveTimer(getTime()));
-		}
-	});
+	// useEffect(() => {
+	// 	return () => {
+	// 		console.log('TIME', getTime());
+	// 		const newTime = getTime();
+	// 		if (newTime && newTime != '00:00:00') dispatch(saveTimer(getTime()));
+	// 	}
+	// });
 
 	useEffect(() => {
 		console.log('MOUNT');
