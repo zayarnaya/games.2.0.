@@ -3,6 +3,7 @@ import classNames from 'classnames';
 
 import styles from './Timer.module.scss';
 import { parseTime } from './helpers';
+import { useInterval } from '../../../hooks';
 
 type Props = {
     className?: string,
@@ -12,22 +13,13 @@ type Props = {
 
 export const Timer = forwardRef<HTMLDivElement, Props>((props: Props, ref: LegacyRef<HTMLDivElement>) => {
     const { className, time, pause } = props;
-
     const [hour, setHour] = useState(0);
     const [min, setMin] = useState(0);
     const [sec, setSec] = useState(0);
-    const [tick, setTick] = useState(false);
     const timerRef = useRef(null);
 
     const timer = () => {
-        if (!pause && time) setTick(!tick);
-    }
-
-    timerRef.current = setTimeout(timer, 1000); // ну пока так работает а там надо как-то по уму, без четырех ререндеров
-
-
-    useEffect(() => {
-        if (!pause && time) {
+        if (!pause) {
             setSec(sec + 1);
             if (sec === 59) {
                 setSec(0);
@@ -38,7 +30,10 @@ export const Timer = forwardRef<HTMLDivElement, Props>((props: Props, ref: Legac
                 setHour(hour + 1);
             }
         }
-    }, [tick]);
+
+    }
+
+    timerRef.current = useInterval(timer, 1000); // ну пока так работает а там надо как-то по уму, без четырех ререндеров
 
     useEffect(() => {
         if (time) {
@@ -52,10 +47,6 @@ export const Timer = forwardRef<HTMLDivElement, Props>((props: Props, ref: Legac
             setSec(0);
         }
     }, [time]);
-
-    useEffect(() => {
-        clearTimeout(timerRef.current);  
-    })
 
 
     // с форматированием бы разобраться бы

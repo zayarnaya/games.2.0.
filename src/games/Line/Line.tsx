@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-// import { useSelector, useDispatch } from 'react-redux';
 import type { LineItem } from './types';
 import type { RootState } from '../../store/store';
 import { checkHorizontal, checkVertical } from './helpers';
@@ -11,7 +10,7 @@ import { LineButton } from './components/LineButton/LineButton';
 import { LineField } from './components/LineField/LineField';
 import { LineLayout } from './layouts/LineLayout/LineLayout';
 import { RulesLayout } from '../../views/layouts/RulesLayout/RulesLayout';
-import { onDeleteChars, onNext, onUndo, onRestart, onLoadGame, startTimer, onVictory, onContinue } from '../../store/slices/LineSlice';
+import { onDeleteChars, onNext, onUndo, onRestart, onLoadGame, startTimer, onVictory, onContinue, saveTimer } from '../../store/slices/LineSlice';
 import { Timer } from '../../views/components/Timer/Timer';
 import { Patch } from '../../views/components/Patch/Patch';
 import { Score } from '../../views/components/Score/Score';
@@ -20,8 +19,6 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 
 export const Line = () => {
-	// const { arr: defaultArray, history: defaultHistory, timer, score, win, fail } = useSelector((state: RootState) => state.line);
-	// const dispatch = useDispatch();
 	const { arr: defaultArray, history: defaultHistory, timer, score, win, fail, continued } = useAppSelector((state: RootState) => state.line);
 	const dispatch = useAppDispatch();
 
@@ -50,6 +47,21 @@ export const Line = () => {
 
 	useEffect(() => {
 		if (fail && !continued) onFail();
+	}, [fail, continued]);
+
+	useEffect(() => {
+		return () => {
+			console.log('TIME', getTime());
+			const newTime = getTime();
+			if (newTime && newTime != '00:00:00') dispatch(saveTimer(getTime()));
+		}
+	});
+
+	useEffect(() => {
+		console.log('MOUNT');
+		return () => {
+			console.log('UNMOUNT');
+		}
 	})
 
 	const saveHighscore = () => {
@@ -205,7 +217,7 @@ export const Line = () => {
 				<Button data-testid='submit_button' size={'sm'} onClick={onSubmit} floatRight={true}>Дальше</Button>
 			</LineLayout>
 			<RulesLayout>
-				<Timer ref={timerRef} time={timer} pause={pause} />
+				<Timer ref={timerRef} time={timer} pause={pause || !hasGameStarted} />
 				<Score>{score}</Score>
 				<div>Рекорд: {highscore}</div>
 				<div>Лучшее время: {bestTime}</div>
