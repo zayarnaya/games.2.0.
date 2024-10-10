@@ -1,9 +1,14 @@
 // @ts-nocheck
-import React, { FC, useState } from 'react';
+import React, { FC, HTMLAttributes, useState } from 'react';
 import { NavItem } from '../NavItem/NavItem';
 import styles from './Sidebar.module.scss';
-// @ts-ignore 
-export const Sidebar: FC = ({ links }) => {
+
+interface Props extends HTMLAttributes<HTMLElement> {
+	links: {name: string, href: string}[],
+}
+
+export const Sidebar: FC<Props> = (props: Props) => {
+	const {links} = props;
 	const [items, setItems] = useState(links);
 	return (
 		<aside className={styles.sidebar}>

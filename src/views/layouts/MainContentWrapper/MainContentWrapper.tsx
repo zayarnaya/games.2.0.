@@ -2,7 +2,7 @@ import React, { FC, ReactNode } from 'react';
 import styles from './MainContentWrapper.module.scss';
 
 type Props = {
-	children: ReactNode[];
+	children?: ReactNode[] | ReactNode;
 };
 
 export const MainContentWrapper: FC<Props> = ({ children }) => {

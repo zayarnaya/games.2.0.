@@ -1,5 +1,5 @@
-import React, { StrictMode, Suspense } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import React, { FC, StrictMode, Suspense } from 'react';
+import { BrowserRouter, Outlet, Route, RouterProvider, Routes } from 'react-router-dom';
 
 import './App.scss';
 import './assets/styles/index.scss';
@@ -13,28 +13,19 @@ import { Header } from './views/components/Header/Header';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
 import { Tetris } from './games/Tetris/Tetris';
+import { router } from './router/router';
 
-const App = () => {
-	return (
-		<StrictMode>
-			<Provider store={store}>
-				<BrowserRouter basename={process.env.GAMES_BASE_URL}>
-					<Header />
+export const App: FC = () => {
+	return (<>
+						<Header />
 					<MainContentWrapper>
 						<Sidebar links={menuLinks} />
-						<Suspense fallback={<Spinner />}>
-							<Routes>
-								<Route path='/' element={<Line />} />
-								<Route path='/knight' element={<Knight />} />
-								<Route path='/tetris' element = {<Tetris />} />
-								{/* <Route path='/' element={<Tetris />} /> */}
-							</Routes>
-						</Suspense>
+						<Outlet />
+
 					</MainContentWrapper>
-				</BrowserRouter>
-			</Provider>
-		</StrictMode>
+	</>
+
+
 	);
 };
 
-export default App;
