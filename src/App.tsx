@@ -16,16 +16,27 @@ import { Tetris } from './games/Tetris/Tetris';
 import { router } from './router/router';
 
 export const App: FC = () => {
-	return (<>
-						<Header />
+	return (
+		<StrictMode>
+			<Provider store={store}>
+				{/* <RouterProvider router={router} /> */}
+				<BrowserRouter basename={process.env.GAMES_BASE_URL}>
+					<Header />
 					<MainContentWrapper>
 						<Sidebar links={menuLinks} />
-						<Outlet />
-
+						{/* <Outlet /> */}
+						<Suspense fallback={<Spinner />}>
+							<Routes>
+								<Route path='/' element={<Line />} />
+								<Route path='/knight' element={<Knight />} />
+								<Route path='/tetris' element = {<Tetris />} />
+							</Routes>
+						</Suspense>
 					</MainContentWrapper>
-	</>
-
-
+				</BrowserRouter>
+			</Provider>
+		</StrictMode>
 	);
 };
 
+export default App;
