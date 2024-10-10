@@ -13,6 +13,8 @@ export interface TetrisState {
     speed: number;
     level: number;
     lineCount: number;
+    started: boolean;
+    end: boolean;
 }
 
 const field = getDefaultPlayfield();
@@ -26,6 +28,8 @@ const initialState: TetrisState = {
     speed: defaults.speed,
     level: defaults.level,
     lineCount: defaults.lineCount,
+    started: false,
+    end: false,
 }
 
 export const tetrisSlice = createSlice({
@@ -34,7 +38,7 @@ export const tetrisSlice = createSlice({
   reducers: {
     resetToDefaults: (state) => {
         for (let key in initialState) {
-            state[key] = initialState[key];
+            Object.assign(state, {[key]: initialState[key as keyof TetrisState]});
         }
     },
     updatePlayfield: (state, action) => {
@@ -43,6 +47,10 @@ export const tetrisSlice = createSlice({
     updateCurrentTetromino: (state, action) => {
         state.currentTetromino = action.payload;
     },
+    updateNextTetromino: (state, action) => {
+        state.nextTetromino = action.payload;
+    },
+    
   },
 })
 
