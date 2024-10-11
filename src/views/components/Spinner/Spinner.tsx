@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { FC } from 'react';
 
-import './Spinner.scss';
+import styles from './Spinner.module.scss';
 
-export const Spinner = () => {
+export const Spinner:FC = () => {
 	return (
-		<div className='spinner'>
-			<span className='spinner__dot'>
-				<i className='spinner__item' />
-				<i className='spinner__item' />
-				<i className='spinner__item' />
-				<i className='spinner__item' />
-			</span>
+		<div className={styles.white} aria-hidden>
+			<div className={styles.spinner}>
+				<span className={styles.dot}>
+					<i className={styles.item} />
+					<i className={styles.item} />
+					<i className={styles.item} />
+					<i className={styles.item} />
+				</span>
+			</div>
 		</div>
+
 	);
 };

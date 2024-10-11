@@ -10,7 +10,19 @@
 	}
 }
 
-.spin {
+.white {
+	position: fixed;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(255, 255, 255, 0.5);
+}
+
+.spinner {
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
@@ -28,7 +40,7 @@
 	display: inline-block;
 	opacity: 1;
 
-	&__dot {
+	& .dot {
 		position: relative;
 		display: inline-block;
 		font-size: 32px;
@@ -38,7 +50,7 @@
 		animation: Rotate 1.2s infinite linear;
 	}
 
-	&__item {
+	& .item {
 		position: absolute;
 		display: block;
 		width: 14px;
