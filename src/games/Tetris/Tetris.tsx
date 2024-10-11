@@ -325,6 +325,7 @@ export const Tetris: FC = () => {
 			setNextTetromino(getRandomTetromino());
 			setPlayField(newPlayfield);
 		} catch (error) {
+			// eslint-disable-next-line no-console
 			console.log(error);
 		}
 	};
