@@ -10,5 +10,9 @@ export const menuLinks = [
 	{
 		name: 'Тетрис',
 		href: 'tetris',
-	}
+	},
+	{
+		name: 'Пятнашки',
+		href: 'tag',
+	},
 ];
