@@ -7,7 +7,7 @@ import { NavLink } from 'react-router-dom';
 type Props = {
 	active?: boolean;
 	name: string;
-	onclick?: (e: any) => void;
+	onclick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 	href?: string;
 	className?: string;
 };

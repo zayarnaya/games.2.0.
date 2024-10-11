@@ -10,16 +10,36 @@ import { LineButton } from './components/LineButton/LineButton';
 import { LineField } from './components/LineField/LineField';
 import { LineLayout } from './layouts/LineLayout/LineLayout';
 import { RulesLayout } from '../../views/layouts/RulesLayout/RulesLayout';
-import { onStartGame, onDeleteChars, onNext, onUndo, onRestart, onLoadGame, startTimer, onVictory, onContinue, saveTimer } from '../../store/slices/LineSlice';
+import {
+	onStartGame,
+	onDeleteChars,
+	onNext,
+	onUndo,
+	onRestart,
+	onLoadGame,
+	startTimer,
+	onVictory,
+	onContinue,
+	saveTimer,
+} from '../../store/slices/LineSlice';
 import { Timer } from '../../views/components/Timer/Timer';
 import { Patch } from '../../views/components/Patch/Patch';
 import { Score } from '../../views/components/Score/Score';
 import { Modal } from '../../views/components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import Confetti from 'react-confetti'
+import Confetti from 'react-confetti';
 
 export const Line = () => {
-	const { arr: defaultArray, history: defaultHistory, timer, score, win, fail, continued, started: hasGameStarted } = useAppSelector((state: RootState) => state.line);
+	const {
+		arr: defaultArray,
+		history: defaultHistory,
+		timer,
+		score,
+		win,
+		fail,
+		continued,
+		started: hasGameStarted,
+	} = useAppSelector((state: RootState) => state.line);
 	const dispatch = useAppDispatch();
 
 	const [pause, setPause] = useState(false);
@@ -55,32 +75,32 @@ export const Line = () => {
 	}, [fail, continued]);
 
 	const saveHighscore = () => {
-		localStorage.setItem('line-highscore', (Math.max(highscore, score)).toString())
+		localStorage.setItem('line-highscore', Math.max(highscore, score).toString());
 		setHighscore(Math.max(highscore, score));
-	}
+	};
 
 	const saveBestTime = () => {
 		const time = getTime();
 		const best = time < bestTime ? time : bestTime;
 		localStorage.setItem('line-besttime', best);
 		setBestTime(best);
-	}
+	};
 
 	const onWin = () => {
 		setIsWinModalOpen(true);
 		saveHighscore();
 		saveBestTime();
-	}
+	};
 
 	const onFail = () => {
 		setIsFailModalOpen(true);
 		saveHighscore();
-	}
+	};
 
 	const onEndGame = useCallback(() => {
 		setIsEndModalOpen(true);
 		saveHighscore();
-	}, [])
+	}, []);
 
 	const onWinModalClose = useCallback(() => setIsWinModalOpen(false), []);
 	const onFailModalClose = useCallback(() => {
@@ -95,7 +115,6 @@ export const Line = () => {
 		setIsEndModalOpen(false);
 		dispatch(onRestart());
 	}, []);
-
 
 	const handleClick = (index: number) => {
 		if (!hasGameStarted) {
@@ -114,10 +133,12 @@ export const Line = () => {
 			setArr(newArr);
 		} else {
 			if (checkHorizontal(arr, coords, index) || checkVertical(arr, coords, index)) {
-				dispatch(onDeleteChars({
-					idx: [index, coords],
-					length: arr.length,
-				}));
+				dispatch(
+					onDeleteChars({
+						idx: [index, coords],
+						length: arr.length,
+					})
+				);
 				setCoords(-1);
 			}
 		}
@@ -129,11 +150,11 @@ export const Line = () => {
 			dispatch(onVictory());
 			return;
 		}
-		for (let num of arr2Copy) {
+		for (const num of arr2Copy) {
 			submitArr.push({ ...defaultItem, value: num });
 		}
 
-		dispatch(onNext(submitArr))
+		dispatch(onNext(submitArr));
 	};
 
 	const onStart = () => {
@@ -150,12 +171,15 @@ export const Line = () => {
 		const arr2save = [...arr];
 		if (coords >= 0) arr2save[coords].active = false;
 		const timer = getTime();
-		localStorage.setItem('line-save', JSON.stringify({
-			history,
-			arr: arr2save,
-			timer,
-			score,
-		}));
+		localStorage.setItem(
+			'line-save',
+			JSON.stringify({
+				history,
+				arr: arr2save,
+				timer,
+				score,
+			})
+		);
 	};
 
 	const onLoad = () => {
@@ -163,50 +187,71 @@ export const Line = () => {
 		if (typeof state2loadRaw != 'undefined') {
 			const state2load = JSON.parse(state2loadRaw);
 			dispatch(onLoadGame(state2load));
-
 		}
 	};
 
 	const onPause = () => {
 		setPause(!pause);
-	}
+	};
 
 	const getTime = () => {
 		if (timerRef.current) {
 			return timerRef.current.dataset?.time;
 		}
 		return null;
-	}
+	};
 
 	const handleTimerChange = useCallback((time: string) => setTime(time), [time]);
 
 	return (
 		<GameLayout>
 			{win && <Confetti />}
-			{isFailModalOpen && <Modal onClose={onFailModalClose}>
-			Пожалуй, выиграть уже не получится<br />
-			Ваш счет {score}<br />
-			<Button size='sm' onClick={onFailModalClose}>Продолжить</Button>
-			<Button size='sm' onClick={onFailAndRestart}>Новая игра</Button>
-				</Modal>}
-			{isEndModalOpen && <Modal onClose={onEndGameModalClose}>
-				Вы завершили игру!<br />
-				Ваш счет {score}<br />
-				</Modal>}
-			{isWinModalOpen && <Modal onClose={onWinModalClose}>
-				Ура, победа!<br />
-				Ваш счет {score}
-				</Modal>}
+			{isFailModalOpen && (
+				<Modal onClose={onFailModalClose}>
+					Пожалуй, выиграть уже не получится
+					<br />
+					Ваш счет {score}
+					<br />
+					<Button size='sm' onClick={onFailModalClose}>
+						Продолжить
+					</Button>
+					<Button size='sm' onClick={onFailAndRestart}>
+						Новая игра
+					</Button>
+				</Modal>
+			)}
+			{isEndModalOpen && (
+				<Modal onClose={onEndGameModalClose}>
+					Вы завершили игру!
+					<br />
+					Ваш счет {score}
+					<br />
+				</Modal>
+			)}
+			{isWinModalOpen && (
+				<Modal onClose={onWinModalClose}>
+					Ура, победа!
+					<br />
+					Ваш счет {score}
+				</Modal>
+			)}
 			<LineLayout>
 				<LineField>
-					{pause && <Patch game='line' /> }
+					{pause && <Patch game='line' />}
 					{arr.map((item, index) => (
-						<LineButton key={'line_button' + index} disabled={item.deleted} active={item.active} onClick={() => handleClick(index)}>
+						<LineButton
+							key={'line_button' + index}
+							disabled={item.deleted}
+							active={item.active}
+							onClick={() => handleClick(index)}
+						>
 							{item.value}
 						</LineButton>
 					))}
 				</LineField>
-				<Button data-testid='submit_button' size={'sm'} onClick={onSubmit} floatRight={true}>Дальше</Button>
+				<Button data-testid='submit_button' size={'sm'} onClick={onSubmit} floatRight={true}>
+					Дальше
+				</Button>
 			</LineLayout>
 			<RulesLayout>
 				<Timer callback={handleTimerChange} ref={timerRef} time={timer} pause={pause || !hasGameStarted} />
@@ -231,7 +276,9 @@ export const Line = () => {
 						<Button size={'md'} onClick={onEndGame}>
 							Закончить игру
 						</Button>
-						<Button size='md' disabled={!hasGameStarted} onClick={onPause}>{pause ? 'Вернуться к игре' : 'Пауза'}</Button>
+						<Button size='md' disabled={!hasGameStarted} onClick={onPause}>
+							{pause ? 'Вернуться к игре' : 'Пауза'}
+						</Button>
 					</div>
 				</div>
 				<div dangerouslySetInnerHTML={{ __html: rules }} />

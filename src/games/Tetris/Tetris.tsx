@@ -270,7 +270,7 @@ export const Tetris: FC = () => {
 	const placeTetromino = () => {
 		try {
 			let linesAtOnce = 0;
-			const newPlayfield = copyMatrix(playField);
+			const newPlayfield = copyMatrix(playField) as Sequence[][];
 			let ended = false;
 			for (let row = 0; row < currentTetromino.matrix.length; row++) {
 				for (let col = 0; col < currentTetromino.matrix[row].length; col++) {

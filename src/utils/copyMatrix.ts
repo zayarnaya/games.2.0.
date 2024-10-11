@@ -1,7 +1,7 @@
-export const copyMatrix = (matrix: any[][]) => {
-    const res = [];
-    for (let el of matrix) {
-        res.push([...el]);
-    } 
-    return res;
-}
+export const copyMatrix = (matrix: unknown[][]) => {
+	const res = [];
+	for (const el of matrix) {
+		res.push([...el]);
+	}
+	return res;
+};

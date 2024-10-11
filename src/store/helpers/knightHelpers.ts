@@ -17,30 +17,30 @@ export const getDefaultField = (): FieldItem[][] => {
 };
 
 export const removeHint = (coords: [number, number], field: FieldItem[][]) => {
-    const [row, col] = coords;
-    const newField = [...field];
-    for (let move of legitMoves) {
-        if (newField[row + move[0]] && newField[row + move[0]][col + move[1]]) {
-            newField[row + move[0]][col + move[1]] = { ...newField[row + move[0]][col + move[1]], hint: false };
-        }
-    }
-    return newField;
+	const [row, col] = coords;
+	const newField = [...field];
+	for (const move of legitMoves) {
+		if (newField[row + move[0]] && newField[row + move[0]][col + move[1]]) {
+			newField[row + move[0]][col + move[1]] = { ...newField[row + move[0]][col + move[1]], hint: false };
+		}
+	}
+	return newField;
 };
 
 export const setHint = (coords: [number, number], field: FieldItem[][]) => {
-    const [row, col] = coords;
-    const newField = [...field];
-    let count = 0;
-    for (let move of legitMoves) {
-        if (
-            newField[row + move[0]] &&
-            newField[row + move[0]][col + move[1]] &&
-            !newField[row + move[0]][col + move[1]].value
-        ) {
-            count++;
-            newField[row + move[0]][col + move[1]] = { ...newField[row + move[0]][col + move[1]], hint: true };
-        }
-    }
-    if (!count) return null;
-    return newField;
+	const [row, col] = coords;
+	const newField = [...field];
+	let count = 0;
+	for (const move of legitMoves) {
+		if (
+			newField[row + move[0]] &&
+			newField[row + move[0]][col + move[1]] &&
+			!newField[row + move[0]][col + move[1]].value
+		) {
+			count++;
+			newField[row + move[0]][col + move[1]] = { ...newField[row + move[0]][col + move[1]], hint: true };
+		}
+	}
+	if (!count) return null;
+	return newField;
 };

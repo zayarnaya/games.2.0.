@@ -1,5 +1,5 @@
 import React, { FC, StrictMode, Suspense } from 'react';
-import { BrowserRouter, Outlet, Route, RouterProvider, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import './App.scss';
 import './assets/styles/index.scss';
@@ -13,7 +13,6 @@ import { Header } from './views/components/Header/Header';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
 import { Tetris } from './games/Tetris/Tetris';
-import { router } from './router/router';
 
 export const App: FC = () => {
 	return (
@@ -29,7 +28,7 @@ export const App: FC = () => {
 							<Routes>
 								<Route path='/' element={<Line />} />
 								<Route path='/knight' element={<Knight />} />
-								<Route path='/tetris' element = {<Tetris />} />
+								<Route path='/tetris' element={<Tetris />} />
 							</Routes>
 						</Suspense>
 					</MainContentWrapper>
