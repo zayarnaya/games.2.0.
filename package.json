@@ -10,7 +10,8 @@
     "serve": "webpack serve --open --env development",
     "prettier": "npx prettier . --write",
     "deploy": "gh-pages -d build",
-    "test": "jest"
+    "test": "jest",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
@@ -36,8 +37,10 @@
     "gh-pages": "6.1.1",
     "html-loader": "5.0.0",
     "html-webpack-plugin": "5.6.0",
+    "husky": "9.1.6",
     "jest": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
+    "lint-staged": "15.2.10",
     "mini-css-extract-plugin": "2.7.7",
     "node-sass": "9.0.0",
     "prettier": "3.2.4",
@@ -60,5 +63,8 @@
     "react-dom": "18.2.0",
     "react-redux": "9.1.2",
     "react-router-dom": "6.21.2"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx,jsx,scss,md}": "prettier --write --ignore-unknown"
   }
 }
