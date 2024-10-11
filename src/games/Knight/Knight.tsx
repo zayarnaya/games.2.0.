@@ -14,6 +14,7 @@ import { Patch } from '../../views/components/Patch/Patch';
 import type { RootState } from '../../store/store';
 import { onStartGame, saveTimer, onNextMove, setWrongMove, removeWrongMove, onUndoMove, restart, onLoadGame, startTimer } from '../../store/slices/KnightSlice';
 import { Modal } from '../../views/components';
+import Confetti from 'react-confetti'
 
 // todo проверить вин и фейл
 export const Knight = () => {
@@ -137,6 +138,7 @@ export const Knight = () => {
 
 	return (
 		<GameLayout>
+			{win && <Confetti />}
 			{isFailModalOpen && <Modal onClose={onFailModalClose}>
 				Вы проиграли :-(<br />
 				Ваш счет {count}

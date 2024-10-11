@@ -16,7 +16,7 @@ import { Patch } from '../../views/components/Patch/Patch';
 import { Score } from '../../views/components/Score/Score';
 import { Modal } from '../../views/components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-
+import Confetti from 'react-confetti'
 
 export const Line = () => {
 	const { arr: defaultArray, history: defaultHistory, timer, score, win, fail, continued, started: hasGameStarted } = useAppSelector((state: RootState) => state.line);
@@ -182,6 +182,7 @@ export const Line = () => {
 
 	return (
 		<GameLayout>
+			{win && <Confetti />}
 			{isFailModalOpen && <Modal onClose={onFailModalClose}>
 			Пожалуй, выиграть уже не получится<br />
 			Ваш счет {score}<br />

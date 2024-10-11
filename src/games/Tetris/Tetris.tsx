@@ -14,6 +14,7 @@ import rules from './rules.html';
 import { Score } from '../../views/components/Score/Score';
 import { Modal } from '../../views/components';
 import { copyMatrix } from '../../utils';
+import Confetti from 'react-confetti'
 
 export const Tetris:FC = () => {
     const { width, height, cellSize, figWidth, figHeight } = dimensions;
@@ -321,6 +322,7 @@ export const Tetris:FC = () => {
 
     return (
         <GameLayout>
+            {gameOver && <Confetti />}
             {isFinishModalOpen && <Modal onClose={() => setIsFinishModalOpen(false)}>
                     <p>Игра закончена! <br />
                     Ваш счет {score}, вы убрали {lineCount} линий за {time}.<br />
