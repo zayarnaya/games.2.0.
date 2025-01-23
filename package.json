@@ -9,6 +9,7 @@
     "clean": "rd /s /q dist",
     "serve": "webpack serve --open --env development",
     "prettier": "npx prettier . --write",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "test": "jest",
     "prepare": "husky install",

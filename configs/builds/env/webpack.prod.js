@@ -3,6 +3,8 @@ const MiniCssExtractPluginInstance = require('../../plugins/MiniCssExtractPlugin
 const envPlugin = require('../../plugins/DefinePlugin')('production');
 const styles = require('../../rules/styles')(true);
 const styles_modules = require('../../rules/style_modules')(true);
+const tetrisPagePlugin = require('../../plugins/HtmlTetris');
+const knightPagePlugin = require('../../plugins/Htmlknight');
 
 module.exports = {
 	mode: 'production',
@@ -15,7 +17,7 @@ module.exports = {
 		clean: true,
 		assetModuleFilename: path.join('assets', '[name].[contenthash][ext]'),
 	},
-	plugins: [envPlugin, MiniCssExtractPluginInstance],
+	plugins: [envPlugin, MiniCssExtractPluginInstance, tetrisPagePlugin, knightPagePlugin],
 	module: {
 		rules: [styles, styles_modules],
 	},
